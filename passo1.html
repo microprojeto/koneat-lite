@@ -63,7 +63,7 @@
             stroke: #8e8e93;
         }
 
-        /* Refino 2: Botões de Ação do Perfil com bordas levemente quadradas (Padrão Instagram) */
+        /* Botões de Ação do Perfil com bordas levemente quadradas (Padrão Instagram) */
         .action-buttons {
             display: flex;
             gap: 8px;
@@ -91,13 +91,6 @@
 
         .action-buttons .btn-secondary:hover {
             background-color: #dbdbdb;
-        }
-
-        /* Ajuste do Menu Dropdown para exibir a lista completa de opções */
-        .dropdown-menu {
-            max-height: 380px;
-            overflow-y: auto;
-            width: 230px;
         }
 
         /* Grid de Mídias Postadas no Perfil */
@@ -171,36 +164,27 @@
                 koneat_user
             </div>
             <div class="header-actions" style="display: flex; align-items: center; gap: 12px;">
-                <!-- Refino 1: Balão em cinza escuro visível com o rabinho voltado para a direita (lado dos 3 pontinhos) -->
+                <!-- Balão cinza escuro perfeitamente limpo com o rabinho apontando para a direita -->
                 <button class="icon-btn" aria-label="Mensagens" style="background: none; border: none; cursor: pointer; padding: 0; display: inline-flex; align-items: center; justify-content: center; position: relative; width: 28px; height: 28px;">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="#4a4a4a" stroke="none">
-                        <!-- Caminho do balão ajustado com o rabinho apontando para a direita -->
-                        <path d="M12 3c4.97 0 9 3.58 9 8 0 2.22-.9 4.23-2.38 5.76L20 21l-3.37-1.12C15.28 20.42 13.67 20.5 12 20.5c-4.97 0-9-3.58-9-8s4.03-8 9-8z"></path>
+                        <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"></path>
                     </svg>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#ffffff" style="position: absolute; top: 50%; left: 47%; transform: translate(-50%, -50%);">
-                        <circle cx="6" cy="11.5" r="1.5"></circle>
-                        <circle cx="11" cy="11.5" r="1.5"></circle>
-                        <circle cx="16" cy="11.5" r="1.5"></circle>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#ffffff" style="position: absolute; top: 42%; left: 50%; transform: translate(-50%, -50%);">
+                        <circle cx="7" cy="11.5" r="1.5"></circle>
+                        <circle cx="12" cy="11.5" r="1.5"></circle>
+                        <circle cx="17" cy="11.5" r="1.5"></circle>
                     </svg>
                 </button>
 
-                <!-- Menu Dropdown Completo com as Opções de Configurações -->
+                <!-- Menu Original Exato com apenas as 3 opções (Configurações, Privacidade, Termos) -->
                 <div class="dropdown-wrapper" style="display: inline-flex; align-items: center;">
                     <button class="icon-btn" id="menuBtn" aria-label="Opções">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
                     </button>
                     <div class="dropdown-menu" id="dropdownMenu">
                         <a href="./configuracoes.html" class="dropdown-item">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l-.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
                             Configurações
-                        </a>
-                        <a href="./atividades.html" class="dropdown-item">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
-                            Ver minhas atividades
-                        </a>
-                        <a href="./informacoes-conta.html" class="dropdown-item">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                            Informações da conta
                         </a>
                         <a href="./privacidade.html" class="dropdown-item">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
@@ -209,14 +193,6 @@
                         <a href="./termos.html" class="dropdown-item">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
                             Termos
-                        </a>
-                        <a href="./ajuda.html" class="dropdown-item">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-                            Ajuda
-                        </a>
-                        <a href="./deletar-conta.html" class="dropdown-item" style="color: #e74c3c;">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                            Deletar conta
                         </a>
                     </div>
                 </div>
@@ -260,7 +236,7 @@
             <p class="user-bio" id="profileBio"></p>
         </section>
 
-        <!-- Botões de Ação do Perfil -->
+        <!-- Botões de Ação do Perfil (Com cantos levemente quadrados) -->
         <section class="action-buttons">
             <a href="./editar-perfil.html" class="btn-secondary">Editar perfil</a>
             <button class="btn-secondary">Compartilhar perfil</button>
@@ -286,7 +262,7 @@
             </button>
         </nav>
 
-        <!-- Área Vazia / Feed Painel -->
+        <!-- Área Vazia / Feed Painel (Com texto atualizado) -->
         <section class="feed-empty-state" id="emptyState">
             <div class="empty-icon-wrapper">
                 <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#8e8e93" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
@@ -385,5 +361,5 @@
         renderUserPosts();
     </script>
 </body>
-                                </html>
-                
+    </html>
+                        
