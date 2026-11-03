@@ -63,6 +63,36 @@
             stroke: #8e8e93; /* Ícone interno cinza */
         }
 
+        /* Refino 2: Botões de Ação do Perfil com bordas levemente quadradas (Padrão Instagram) */
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            padding: 0 16px;
+            margin-bottom: 15px;
+        }
+
+        .action-buttons .btn-secondary {
+            flex: 1;
+            background-color: #efefef;
+            color: #000000;
+            border: none;
+            border-radius: 6px; /* Bordas levemente quadradas estilo Instagram */
+            padding: 8px 0;
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+        }
+
+        .action-buttons .btn-secondary:hover {
+            background-color: #dbdbdb;
+        }
+
         /* Grid de Mídias Postadas no Perfil */
         .posts-grid {
             display: grid;
@@ -134,11 +164,19 @@
                 koneat_user
             </div>
             <div class="header-actions">
-                <button class="icon-btn" aria-label="Mensagens">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                <!-- Refino 1: Balão de fala cinza com 3 pontinhos brancos e o rabinho direcionado para o lado dos pontos -->
+                <button class="icon-btn" aria-label="Mensagens" style="background: none; border: none; cursor: pointer; padding: 4px; display: inline-flex; align-items: center; justify-content: center;">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="#efefef" stroke="none">
+                        <!-- Balão com o rabinho posicionado à direita (direcionado para os pontos) -->
+                        <path d="M12 3C6.48 3 2 6.92 2 11.75c0 2.22.9 4.23 2.38 5.76L3.5 20.5l3.22-1.07C7.94 19.8 9.93 20.5 12 20.5c5.52 0 10-3.92 10-8.75S17.52 3 12 3z"></path>
+                    </svg>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#ffffff" style="position: absolute; margin-top: -1px;">
+                        <circle cx="7" cy="11.5" r="1.5"></circle>
+                        <circle cx="12" cy="11.5" r="1.5"></circle>
+                        <circle cx="17" cy="11.5" r="1.5"></circle>
                     </svg>
                 </button>
+
                 <div class="dropdown-wrapper">
                     <button class="icon-btn" id="menuBtn" aria-label="Opções">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
@@ -198,7 +236,7 @@
             <p class="user-bio" id="profileBio"></p>
         </section>
 
-        <!-- Botões de Ação do Perfil -->
+        <!-- Botões de Ação do Perfil (Com cantos levemente quadrados - Refino 2) -->
         <section class="action-buttons">
             <a href="./editar-perfil.html" class="btn-secondary">Editar perfil</a>
             <button class="btn-secondary">Compartilhar perfil</button>
@@ -224,7 +262,7 @@
             </button>
         </nav>
 
-        <!-- Área Vazia / Feed Painel -->
+        <!-- Área Vazia / Feed Painel (Com texto atualizado - Refino 3) -->
         <section class="feed-empty-state" id="emptyState">
             <div class="empty-icon-wrapper">
                 <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#8e8e93" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
@@ -234,7 +272,7 @@
                     <path d="M15.5 14c2.8 0 5 1.5 5 4"></path>
                 </svg>
             </div>
-            <h2 class="empty-title">Capture o momento com um amigo</h2>
+            <h2 class="empty-title">Compartilhe seu primeiro momento com o koneat</h2>
             <a href="./criar.html" class="btn-create-post" style="text-decoration:none; display:inline-block;">Crie seu primeiro post</a>
         </section>
 
@@ -339,4 +377,5 @@
         renderUserPosts();
     </script>
 </body>
-  </html>
+                            </html>
+                        
