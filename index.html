@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="Koneat Lite — entre para acessar seu perfil e seus momentos.">
+  <title>Koneat Lite — O começo</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles.css?v=login-auth-proxy-20261103-v1">
+  <script type="module" src="/app.js?v=login-auth-proxy-20261103-v1"></script>
+</head>
+<body>
+  <div class="app" id="app"></div>
+  <input id="media-input" class="hidden-input" type="file" accept="image/*,video/*" multiple aria-label="Selecionar mídia da galeria">
+  <input id="camera-input" class="hidden-input" type="file" accept="image/*,video/*" capture="environment" aria-label="Abrir câmera">
+  <input id="avatar-input" class="hidden-input" type="file" accept="image/*" aria-label="Selecionar foto de perfil">
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
