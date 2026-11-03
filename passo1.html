@@ -52,7 +52,7 @@
             width: 32px;
             height: 32px;
             border-radius: 50%;
-            border: 2px solid #ffffff; /* Linha oca por fora branca */
+            border: 2px solid #ffffff;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -60,7 +60,7 @@
         }
 
         .profile-active-circle svg {
-            stroke: #8e8e93; /* Ícone interno cinza */
+            stroke: #8e8e93;
         }
 
         /* Botões de Ação do Perfil com bordas levemente quadradas (Padrão Instagram) */
@@ -76,7 +76,7 @@
             background-color: #efefef;
             color: #000000;
             border: none;
-            border-radius: 6px; /* Bordas levemente quadradas */
+            border-radius: 6px;
             padding: 8px 0;
             font-size: 14px;
             font-weight: 600;
@@ -147,7 +147,7 @@
         }
 
         .btn-delete-post:hover {
-            background: rgba(231, 76, 60, 0.9); /* Vermelho ao passar o mouse */
+            background: rgba(231, 76, 60, 0.9);
         }
 
         .btn-delete-post:active {
@@ -164,15 +164,15 @@
                 koneat_user
             </div>
             <div class="header-actions" style="display: flex; align-items: center; gap: 12px;">
-                <!-- Balão de mensagens redondo, cinza escuro, com o rabinho para a direita e 3 pontinhos brancos centralizados -->
+                <!-- Balão de mensagens redondo, cinza escuro, com o rabinho para a direita -->
                 <button class="icon-btn" aria-label="Mensagens" style="background: none; border: none; cursor: pointer; padding: 0; display: inline-flex; align-items: center; justify-content: center; position: relative; width: 28px; height: 28px;">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="#666666" stroke="none">
-                        <path d="M12 2C6.48 2 2 6.03 2 11c0 2.39.97 4.61 2.64 6.31L3.5 21l3.95-1.16C8.84 20.35 10.39 20.5 12 20.5c5.52 0 10-4.03 10-9s-4.48-9-10-9z"></path>
+                        <path d="M12 2C6.48 2 2 6.03 2 11c0 2.39.97 4.61 2.64 6.31L4 21l3.69-1.23C8.83 20.25 10.38 20.5 12 20.5c5.52 0 10-4.03 10-9s-4.48-9-10-9z"></path>
                     </svg>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#ffffff" style="position: absolute; top: 44%; left: 50%; transform: translate(-50%, -50%);">
-                        <circle cx="7" cy="11.5" r="1.5"></circle>
-                        <circle cx="12" cy="11.5" r="1.5"></circle>
-                        <circle cx="17" cy="11.5" r="1.5"></circle>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#ffffff" style="position: absolute; top: 42%; left: 47%; transform: translate(-50%, -50%);">
+                        <circle cx="6" cy="11.5" r="1.5"></circle>
+                        <circle cx="11" cy="11.5" r="1.5"></circle>
+                        <circle cx="16" cy="11.5" r="1.5"></circle>
                     </svg>
                 </button>
 
@@ -235,7 +235,7 @@
             <p class="user-bio" id="profileBio"></p>
         </section>
 
-        <!-- Botões de Ação do Perfil (Com cantos levemente quadrados) -->
+        <!-- Botões de Ação do Perfil -->
         <section class="action-buttons">
             <a href="./editar-perfil.html" class="btn-secondary">Editar perfil</a>
             <button class="btn-secondary">Compartilhar perfil</button>
@@ -376,5 +376,4 @@
         renderUserPosts();
     </script>
 </body>
-    </html>
-    
+</html>
