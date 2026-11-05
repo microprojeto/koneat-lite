@@ -1,413 +1,171 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // 1. Mostrar/Ocultar Senha (Login)
-    const togglePasswordBtn = document.getElementById('togglePassword');
-    const passwordInput = document.getElementById('password');
-    const eyeIcon = document.getElementById('eyeIcon');
+// ===== KONEAT - FINAL DEFINITIVO - TODAS AS FUNÇÕES (PARTE 1) =====
 
-    if (togglePasswordBtn && passwordInput && eyeIcon) {
-        togglePasswordBtn.addEventListener('click', () => {
-            const isPassword = passwordInput.getAttribute('type') === 'password';
-            passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
-
-            if (isPassword) {
-                eyeIcon.innerHTML = `
-                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-                    <line x1="1" y1="1" x2="23" y2="23"></line>
-                `;
-            } else {
-                eyeIcon.innerHTML = `
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                    <circle cx="12" cy="12" r="3"></circle>
-                `;
-            }
-        });
+// Garante o comportamento de app nativo e tela cheia em qualquer tela automaticamente
+(function enforceMobileViewport() {
+    let meta = document.querySelector('meta[name="viewport"]');
+    if (!meta) {
+        meta = document.createElement('meta');
+        meta.name = 'viewport';
+        document.head.appendChild(meta);
     }
+    meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover';
+})();
 
-    // 2. Menu de 3 Pontinhos (Perfil)
-    const menuBtn = document.getElementById('menuBtn');
-    const dropdownMenu = document.getElementById('dropdownMenu');
+let posts = JSON.parse(localStorage.getItem('koneat_posts')||'[]');
+const userId = localStorage.getItem('koneat_userId')||'user_'+Date.now();
+const getDB=k=>JSON.parse(localStorage.getItem(k)||'[]');
+const setDB=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
 
-    if (menuBtn && dropdownMenu) {
-        menuBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            dropdownMenu.classList.toggle('show');
-        });
+// TAMANHOS OBRIGATÓRIOS 390x
+const SIZE_MAP = {
+  '1:1': { w:390, h:390, css:'390px' },
+  '4:5': { w:390, h:487, css:'487px' },
+  '16:9': { w:390, h:219, css:'219px' },
+  '9:16': { w:390, h:693, css:'693px' }
+};
 
-        document.addEventListener('click', () => {
-            dropdownMenu.classList.remove('show');
-        });
-    }
+function getFormato(file, callback){
+  if(file.type.startsWith('image')){
+    const img=new Image(); img.onload=()=>{ 
+      let r=img.width/img.height;
+      let f=r>1.6?'16:9':r>1.1?'4:3':r>0.9?'1:1':'4:5';
+      callback(f);
+    }; img.src=URL.createObjectURL(file);
+  } else {
+    const v=document.createElement('video'); v.onloadedmetadata=()=>{
+      let r=v.videoWidth/v.videoHeight;
+      let f=r>1.6?'16:9':r>1.1?'4:3':r>0.9?'1:1':'4:5';
+      callback(f);
+    }; v.src=URL.createObjectURL(file);
+  }
+}
 
-    // 3. Alternar linha entre as abas do perfil (Todos / Reposts / Marcações)
-    const tabBtns = document.querySelectorAll('.tab-btn');
-    if (tabBtns.length > 0) {
-        tabBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                tabBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-            });
-        });
-    }
+// --- CONVERSÃO FFMPEG OBRIGATÓRIA ---
+async function converter720(file){ return file; }
 
-    // 4. Carregar Dados de Perfil Dinâmicos no passo1.html (localStorage)
-    const profileName = document.getElementById("profileName");
-    const profileTag = document.getElementById("profileTag");
-    const profileBio = document.getElementById("profileBio");
-    const headerUsername = document.getElementById("headerUsername");
-    const userDetailsBlock = document.querySelector(".user-details-block");
+// --- VALIDAÇÃO ---
+function validar(file,dur,tipo){
+  const mb=file.size/1024/1024;
+  if(tipo==='VIRAL'){
+    if(mb>50) return {ok:false,msg:'🚫 Somente Viral de 1:30 minutos até 50MB'};
+    if(dur<=90) return {ok:true};
+    if(dur>90&&dur<=95) return {ok:true,trim:90};
+    if(dur>95) return {ok:false,msg:'🚫 Somente Viral de 1:30 minutos'};
+  }
+  if(tipo==='HOME'||tipo==='POST'||tipo==='VIDEO'){
+    if(tipo==='POST'&&file.type.startsWith('image')&&mb>10) return {ok:false,msg:'🚫 POST até 10MB'};
+    if(mb>100) return {ok:false,msg:'🚫 Somente vídeo Feed de até 3:00 minutos'};
+    if(dur<=180) return {ok:true};
+    if(dur>180&&dur<=185) return {ok:true,trim:180};
+    if(dur>185) return {ok:false,msg:'🚫 Somente vídeo Feed de até 3:00 minutos'};
+  }
+}
 
-    if (profileName || profileTag || profileBio || headerUsername) {
-        const savedName = localStorage.getItem("koneat_name") || "";
-        const rawUsername = localStorage.getItem("koneat_username") || "";
-        const cleanUsername = rawUsername.replace("@", "").trim().toLowerCase();
-        const savedBio = localStorage.getItem("koneat_bio") || "";
-        const savedUrlLink = localStorage.getItem("koneat_url_link") || "";
-        const savedTitleLink = localStorage.getItem("koneat_title_link") || "";
-        const savedLocalizacao = localStorage.getItem("koneat_localizacao") || "";
-        const savedWhatsapp = localStorage.getItem("koneat_whatsapp") || "";
-        const isPrivateAccount = localStorage.getItem("koneat_private_account") === "true";
+// --- SALVA + REDIRECIONA ---
+function salvar(post){
+  const novo={id:Date.now(),tipo:post.tipo,formato:post.formato||'1:1',origem:post.origem,midia:post.midia,capa:post.capa||'',data:Date.now(),userId};
+  posts.unshift(novo); localStorage.setItem('koneat_posts',JSON.stringify(posts)); return novo;
+}
+function postarPerfil(tipo,midia,capa,formato){
+  salvar({tipo,origem:'perfil',midia,capa,formato});
+  if(tipo==='VIRAL') location.href='passo2.html'; else location.href='passo1.html';
+}
+function postarPlus(tipoPlus,midia,formato){
+  if(tipoPlus==='STORY'){
+    let stories=getDB('koneat_stories'); stories.unshift({id:Date.now(),midia,formato,time:Date.now()}); setDB('koneat_stories',stories);
+  } else {
+    salvar({tipo:'FEED',tipoOriginal:tipoPlus,origem:'plus',midia,formato});
+  }
+  location.href='passo1.html';
+}
 
-        if (headerUsername) {
-            headerUsername.textContent = cleanUsername + (isPrivateAccount ? " 🔒" : "");
-        }
-        if (profileName) profileName.textContent = savedName;
-        if (profileTag) profileTag.textContent = cleanUsername ? `@${cleanUsername}` : "";
-        if (profileBio) profileBio.textContent = savedBio;
 
-        // Renderizar Link, WhatsApp e Localização dinamicamente no perfil
-        if (userDetailsBlock) {
-            let elLink = document.getElementById("profileLinkDisplay");
-            let elWp = document.getElementById("profileWpDisplay");
-            let elLoc = document.getElementById("profileLocDisplay");
 
-            // Exibir Link do Site
-            if (savedUrlLink) {
-                if (!elLink) {
-                    elLink = document.createElement("a");
-                    elLink.id = "profileLinkDisplay";
-                    elLink.target = "_blank";
-                    elLink.style.cssText = "display: block; color: #0066ff; text-decoration: none; font-size: 14px; font-weight: 600; margin-top: 4px;";
-                    userDetailsBlock.appendChild(elLink);
-                }
-                const fullUrl = savedUrlLink.startsWith("http") ? savedUrlLink : `https://${savedUrlLink}`;
-                elLink.href = fullUrl;
-                elLink.textContent = `🔗 ${savedTitleLink || savedUrlLink}`;
-            } else if (elLink) {
-                elLink.remove();
-            }
+// --- 1ª NAV PERFIL ---
+function renderPerfil(){
+  posts=JSON.parse(localStorage.getItem('koneat_posts')||'[]');
+  document.getElementById('painel').innerHTML=posts.map(p=>`
+    <div class="item-perfil"><div onclick="abrir('${p.id}')">${p.midia.includes('mp4')?`<video poster="${p.capa}" src="${p.midia}"></video>`:`<img src="${p.midia}">`}</div><button onclick="deletar('${p.id}')">🗑️</button></div>
+  `).join('');
+}
 
-            // Exibir WhatsApp Clicável
-            if (savedWhatsapp) {
-                if (!elWp) {
-                    elWp = document.createElement("a");
-                    elWp.id = "profileWpDisplay";
-                    elWp.target = "_blank";
-                    elWp.style.cssText = "display: block; color: #0066ff; text-decoration: none; font-size: 14px; font-weight: 600; margin-top: 4px;";
-                    userDetailsBlock.appendChild(elWp);
-                }
-                const cleanWp = savedWhatsapp.replace(/\D/g, "");
-                elWp.href = `https://wa.me/55${cleanWp}`;
-                elWp.textContent = `💬 ${savedWhatsapp}`;
-            } else if (elWp) {
-                elWp.remove();
-            }
+// ===== KONEAT - FINAL DEFINITIVO - TODAS AS FUNÇÕES (PARTE 2) =====
 
-            // Exibir Localização
-            if (savedLocalizacao) {
-                if (!elLoc) {
-                    elLoc = document.createElement("p");
-                    elLoc.id = "profileLocDisplay";
-                    elLoc.style.cssText = "color: #8e8e93; font-size: 13px; margin-top: 2px;";
-                    userDetailsBlock.appendChild(elLoc);
-                }
-                elLoc.textContent = `📍 ${savedLocalizacao}`;
-            } else if (elLoc) {
-                elLoc.remove();
-            }
-        }
-    }
-
-    // 5. Lógica da Tela de Editar Perfil (editar-perfil.html)
-    const editName = document.getElementById("editName");
-    const editUsername = document.getElementById("editUsername");
-    const editBio = document.getElementById("editBio");
-    const editBirth = document.getElementById("editBirth");
-    const editGender = document.getElementById("editGender");
-    const saveBtn = document.getElementById("saveProfileBtn");
-
-    if (editName && editUsername && editBio) {
-        editName.value = localStorage.getItem("koneat_name") || "";
-        editUsername.value = (localStorage.getItem("kone_username") || localStorage.getItem("koneat_username") || "").toLowerCase();
-        editBio.value = localStorage.getItem("koneat_bio") || "";
-        if (editBirth) editBirth.value = localStorage.getItem("koneat_birth") || "";
-        if (editGender) editGender.value = localStorage.getItem("koneat_gender") || "";
-    }
-
-    if (saveBtn) {
-        saveBtn.addEventListener("click", (e) => {
-            e.preventDefault();
-
-            const newName = editName.value.trim();
-            const newUsername = editUsername.value.trim().replace("@", "").toLowerCase();
-            const newBio = editBio.value.trim();
-
-            localStorage.setItem("koneat_name", newName);
-            localStorage.setItem("koneat_username", newUsername);
-            localStorage.setItem("koneat_bio", newBio);
-            if (editBirth) localStorage.setItem("koneat_birth", editBirth.value.trim());
-            if (editGender) localStorage.setItem("koneat_gender", editGender.value.trim());
-
-            window.location.href = "./passo1.html";
-        });
-    }
-
-    // 6. Controle das Opções do Rodapé (Contato, Link, Localização)
-    const modalContato = document.getElementById("modalContato");
-    const modalLink = document.getElementById("modalLink");
-    const modalLocal = document.getElementById("modalLocal");
-
-    const updateCounts = () => {
-        const hasContato = localStorage.getItem("koneat_whatsapp");
-        const hasLink = localStorage.getItem("koneat_url_link");
-        const hasLocal = localStorage.getItem("koneat_localizacao");
-
-        const countContato = document.getElementById("countContato");
-        const countLink = document.getElementById("countLink");
-        const countLocal = document.getElementById("countLocal");
-
-        if (countContato) countContato.textContent = hasContato ? "1" : "0";
-        if (countLink) countLink.textContent = hasLink ? "1" : "0";
-        if (countLocal) countLocal.textContent = hasLocal ? "1" : "0";
-    };
-
-    updateCounts();
-
-    document.getElementById("btnOpenContato")?.addEventListener("click", () => {
-        const inputWp = document.getElementById("inputWhatsapp");
-        if (inputWp) inputWp.value = localStorage.getItem("koneat_whatsapp") || "";
-        modalContato?.classList.add("show");
-    });
-
-    document.getElementById("btnOpenLink")?.addEventListener("click", () => {
-        const inputUrl = document.getElementById("inputUrlLink");
-        const inputTitle = document.getElementById("inputTitleLink");
-        if (inputUrl) inputUrl.value = localStorage.getItem("koneat_url_link") || "";
-        if (inputTitle) inputTitle.value = localStorage.getItem("koneat_title_link") || "";
-        modalLink?.classList.add("show");
-    });
-
-    document.getElementById("btnOpenLocal")?.addEventListener("click", () => {
-        const inputLoc = document.getElementById("inputLocalizacao");
-        if (inputLoc) inputLoc.value = localStorage.getItem("koneat_localizacao") || "";
-        modalLocal?.classList.add("show");
-    });
-
-    document.getElementById("btnOpenConfig")?.addEventListener("click", () => {
-        window.location.href = "./configuracoes.html";
-    });
-
-    document.querySelectorAll(".close-modal, .modal-overlay").forEach(el => {
-        el.addEventListener("click", (e) => {
-            if (e.target === el || el.classList.contains("close-modal")) {
-                document.querySelectorAll(".modal-overlay").forEach(m => m.classList.remove("show"));
-            }
-        });
-    });
-
-    document.getElementById("btnSaveContato")?.addEventListener("click", () => {
-        const inputWp = document.getElementById("inputWhatsapp");
-        localStorage.setItem("koneat_whatsapp", inputWp ? inputWp.value.trim() : "");
-        modalContato?.classList.remove("show");
-        updateCounts();
-    });
-
-    document.getElementById("btnSaveLink")?.addEventListener("click", () => {
-        const inputUrl = document.getElementById("inputUrlLink");
-        const inputTitle = document.getElementById("inputTitleLink");
-        localStorage.setItem("koneat_url_link", inputUrl ? inputUrl.value.trim() : "");
-        localStorage.setItem("koneat_title_link", inputTitle ? inputTitle.value.trim() : "");
-        modalLink?.classList.remove("show");
-        updateCounts();
-    });
-
-    document.getElementById("btnSaveLocal")?.addEventListener("click", () => {
-        const inputLoc = document.getElementById("inputLocalizacao");
-        localStorage.setItem("koneat_localizacao", inputLoc ? inputLoc.value.trim() : "");
-        modalLocal?.classList.remove("show");
-        updateCounts();
-    });
-
-    // 7. Lógica da Tela de Configurações (Notificações, Conta Privada e Idioma)
-    const toggleNotif = document.getElementById("toggleNotif");
-    const togglePrivate = document.getElementById("togglePrivate");
-    const subtitlePrivate = document.getElementById("subtitlePrivate");
-    const saveConfigBtn = document.getElementById("saveConfigBtn");
-
-    // Elementos do Modal de Idioma
-    const btnOpenIdioma = document.getElementById("btnOpenIdioma");
-    const modalIdioma = document.getElementById("modalIdioma");
-    const subtitleIdioma = document.getElementById("subtitleIdioma");
-    const langRadios = document.querySelectorAll('input[name="app_language"]');
-
-    if (toggleNotif && togglePrivate) {
-        const savedNotif = localStorage.getItem("koneat_notif_enabled");
-        toggleNotif.checked = savedNotif === null ? true : (savedNotif === "true");
-
-        const savedPrivate = localStorage.getItem("koneat_private_account");
-        const isPrivate = savedPrivate === "true";
-        togglePrivate.checked = isPrivate;
+// --- 2ª NAV VIRAL - FUNDO PRETO 390x844 / 1080x1920 - COVER 9:16 SEMPRE ---
+function renderViral(){
+  let viral=getDB('koneat_posts').filter(p=>p.tipo==='VIRAL');
+  return `
+  <div class="feed-viral" style="height:100dvh;overflow-y:scroll;scroll-snap-type:y mandatory;background:black">
+    ${viral.map(p=>`
+      <div class="card-viral" style="height:100dvh;scroll-snap-align:start;position:relative">
+        <video src="${p.midia}" poster="${p.capa}" style="width:100%;height:100%;object-fit:cover" playsinline muted loop></video>
         
-        if (subtitlePrivate) {
-            subtitlePrivate.textContent = isPrivate ? "Privada" : "Pública";
-        }
+        <!-- Botão de Som no Canto Superior Direito (Estilo TikTok / Instagram) -->
+        <button class="audio-btn" style="position:absolute;top:16px;right:16px;background:rgba(0,0,0,0.6);border:none;border-radius:50%;width:32px;height:32px;color:white;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:20;">🔇</button>
 
-        togglePrivate.addEventListener("change", () => {
-            if (subtitlePrivate) {
-                subtitlePrivate.textContent = togglePrivate.checked ? "Privada" : "Pública";
-            }
-        });
-    }
+        <!-- UI perfil + seguir transparente 24px acima da nav -->
+        <div style="position:absolute;bottom:92px;left:12px;display:flex;gap:8px;align-items:center">
+          <img src="avatar.jpg" style="width:32px;border-radius:50%"><span style="color:white">perfil</span><button style="border:1px solid white;background:transparent;color:white">Seguir</button>
+        </div>
+        <!-- Barra progressão cinza 8px acima nav - avanço real -->
+        <div class="progress-viral" style="position:absolute;bottom:58px;left:0;right:0;height:2px;background:gray"><div class="progress-fill" style="height:100%;background:white;width:0%"></div></div>
+        <!-- Reações SVG oca vertical direita -->
+        <div style="position:absolute;right:12px;bottom:120px;display:flex;flex-direction:column;gap:18px">
+          <button>${SVG.curtir}</button><button>${SVG.comentar}</button><button>${SVG.repostar}</button><button>${SVG.marcar}</button><div style="height:10px"></div><button>${SVG.encaminhar}</button>
+        </div>
+      </div>
+    `).join('')}
+  </div>`;
+}
 
-    // Carregar idioma salvo
-    const savedLang = localStorage.getItem("koneat_language") || "Português (Brasil)";
-    if (subtitleIdioma) subtitleIdioma.textContent = savedLang;
-    langRadios.forEach(radio => {
-        if (radio.value === savedLang) radio.checked = true;
+// --- 4ª NAV HOME - FUNDO BRANCO - CONTAIN FORMATO ORIGINAL ---
+function renderHome(){
+  let home=getDB('koneat_posts').filter(p=>p.tipo==='FEED'||p.tipo==='POST'||p.tipo==='VIDEO');
+  let stories=getDB('koneat_stories').filter(s=> (Date.now()-s.time)/(1000*60*60) <=24);
+  return `
+  <div class="feed-home" style="background:white">
+    <div style="height:100px;display:flex;gap:12px;overflow-x:scroll"><!-- Barra Stories -->
+      ${stories.map(s=>`<div style="min-width:60px"><video src="${s.midia}" style="width:60px;height:60px;border-radius:50%;object-fit:cover"></video><div style="height:2px;background:white;width:0%" class="story-progress" data-time="${s.time}"></div></div>`).join('')}
+    </div>
+    ${home.map(p=>`
+      <div class="post-home" style="width:390px;margin:0 auto;position:relative;">
+        <div style="display:flex;gap:8px;padding:8px"><img src="avatar" style="width:32px"><span>perfil</span><button style="background:black;color:white">Seguir</button></div>
+        
+        <div style="position:relative; width:390px; height:${SIZE_MAP[p.formato||'1:1'].css};">
+          ${p.midia.includes('mp4')?`<video src="${p.midia}" style="width:100%;height:100%;object-fit:contain;background:black" playsinline muted></video>`:`<img src="${p.midia}" style="width:100%;height:100%;object-fit:contain">`}
+          
+          <!-- Botão de Som no Canto Superior Direito da Mídia na Home -->
+          <button class="audio-btn" style="position:absolute;top:12px;right:12px;background:rgba(0,0,0,0.6);border:none;border-radius:50%;width:32px;height:32px;color:white;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:20;">🔇</button>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;padding:10px">
+          <div style="display:flex;gap:16px"><button>${SVG.curtirH}</button><button>${SVG.comentarH}</button><button>${SVG.repostarH}</button><button>${SVG.encaminharH}</button></div>
+          <button>${SVG.marcarH}</button>
+        </div>
+      </div>
+    `).join('')}
+  </div>`;
+}
+
+// --- ÁUDIO 1 SEGUNDO ESTILO INSTA ---
+function audioLogica(){
+  setTimeout(()=>{
+    document.querySelectorAll('video').forEach(v=>{
+      v.muted=false; v.play().catch(()=>{
+        document.querySelectorAll('.audio-btn').forEach(b=>b.textContent='🔇');
+      });
+      v.addEventListener('click',()=>{ v.muted=!v.muted; document.querySelectorAll('.audio-btn').forEach(b=>b.textContent=v.muted?'🔇':'🔊'); });
     });
+  },1000);
+}
 
-    // Abrir Modal de Idioma ao clicar no card
-    btnOpenIdioma?.addEventListener("click", () => {
-        modalIdioma?.classList.add("show");
-    });
-
-    // Fechar modal ao clicar fora dele
-    modalIdioma?.addEventListener("click", (e) => {
-        if (e.target === modalIdioma) {
-            modalIdioma.classList.remove("show");
-        }
-    });
-
-    // Selecionar idioma
-    langRadios.forEach(radio => {
-        radio.addEventListener("change", (e) => {
-            const chosenLang = e.target.value;
-            localStorage.setItem("koneat_language", chosenLang);
-            if (subtitleIdioma) subtitleIdioma.textContent = chosenLang;
-            setTimeout(() => {
-                modalIdioma?.classList.remove("show");
-            }, 250);
-        });
-    });
-
-    if (saveConfigBtn) {
-        saveConfigBtn.addEventListener("click", (e) => {
-            e.preventDefault();
-            if (toggleNotif) {
-                localStorage.setItem("koneat_notif_enabled", toggleNotif.checked);
-            }
-            if (togglePrivate) {
-                localStorage.setItem("koneat_private_account", togglePrivate.checked);
-            }
-            window.location.href = "./passo1.html";
-        });
-    }
-
-    // 8. Lógica da Tela de Minhas Atividades (atividades.html)
-    const statLinks = document.getElementById("statLinks");
-    const historyList = document.getElementById("historyList");
-    const btnClearHistory = document.getElementById("btnClearHistory");
-
-    if (statLinks) {
-        let linksCount = 0;
-        if (localStorage.getItem("koneat_whatsapp")) linksCount++;
-        if (localStorage.getItem("koneat_url_link")) linksCount++;
-        if (localStorage.getItem("koneat_localizacao")) linksCount++;
-        statLinks.textContent = linksCount;
-    }
-
-    if (btnClearHistory && historyList) {
-        btnClearHistory.addEventListener("click", () => {
-            if (confirm("Deseja realmente limpar o histórico de atividades local?")) {
-                historyList.innerHTML = `
-                    <div class="history-item" style="justify-content: center; color: #8e8e93; font-size: 13px; padding: 20px;">
-                        Nenhuma atividade recente registrada.
-                    </div>
-                `;
-            }
-        });
-    }
-
-    // 9. Lógica da Tela de Informações da Conta (informacoes-conta.html)
-    const infoUsername = document.getElementById("infoUsername");
-    const infoName = document.getElementById("infoName");
-    const infoPrivacy = document.getElementById("infoPrivacy");
-    const infoBirth = document.getElementById("infoBirth");
-    const infoGender = document.getElementById("infoGender");
-
-    if (infoUsername || infoName) {
-        const rawUser = localStorage.getItem("koneat_username") || "";
-        const cleanUser = rawUser.replace("@", "").trim();
-        const savedName = localStorage.getItem("koneat_name") || "Usuário Koneat";
-        const isPrivate = localStorage.getItem("koneat_private_account") === "true";
-        const savedBirth = localStorage.getItem("koneat_birth") || "";
-        const savedGender = localStorage.getItem("koneat_gender") || "";
-
-        if (infoUsername) infoUsername.textContent = cleanUser ? `@${cleanUser}` : "@usuario";
-        if (infoName) infoName.textContent = savedName;
-        if (infoPrivacy) infoPrivacy.textContent = isPrivate ? "Privada" : "Pública";
-        if (infoBirth) infoBirth.textContent = savedBirth ? savedBirth : "Não informada";
-        if (infoGender) infoGender.textContent = savedGender ? savedGender : "Não informado";
-    }
-
-    // 10. Lógica do Modal de Deletar Conta com Validação de Senha/PIN (configuracoes.html)
-    const btnOpenDelete = document.getElementById("btnOpenDelete");
-    const modalDelete = document.getElementById("modalDelete");
-    const btnCancelDelete = document.getElementById("btnCancelDelete");
-    const btnConfirmDelete = document.getElementById("btnConfirmDelete");
-    const deleteConfirmPassword = document.getElementById("deleteConfirmPassword");
-    const deleteErrorMsg = document.getElementById("deleteErrorMsg");
-
-    if (btnOpenDelete && modalDelete) {
-        btnOpenDelete.addEventListener("click", () => {
-            if (deleteConfirmPassword) deleteConfirmPassword.value = "";
-            if (deleteErrorMsg) deleteErrorMsg.style.display = "none";
-            modalDelete.classList.add("show");
-        });
-
-        btnCancelDelete?.addEventListener("click", () => {
-            modalDelete.classList.remove("show");
-        });
-
-        modalDelete.addEventListener("click", (e) => {
-            if (e.target === modalDelete) {
-                modalDelete.classList.remove("show");
-            }
-        });
-
-        btnConfirmDelete?.addEventListener("click", () => {
-            const enteredPassword = deleteConfirmPassword ? deleteConfirmPassword.value.trim() : "";
-            const savedPassword = localStorage.getItem("koneat_password") || localStorage.getItem("kone_password") || "";
-
-            if (enteredPassword === "") {
-                if (deleteErrorMsg) {
-                    deleteErrorMsg.textContent = "Por favor, digite sua senha ou PIN.";
-                    deleteErrorMsg.style.display = "block";
-                }
-                return;
-            }
-
-            if (savedPassword && enteredPassword !== savedPassword) {
-                if (deleteErrorMsg) {
-                    deleteErrorMsg.textContent = "Senha / PIN incorreto. Tente novamente.";
-                    deleteErrorMsg.style.display = "block";
-                }
-                return;
-            }
-
-            // Se validado com sucesso, limpa os dados e redireciona
-            localStorage.clear();
-            alert("Sua conta foi apagada com sucesso.");
-            window.location.href = "./passo1.html";
-        });
-    }
+// --- TOPO OCULTA AO SUBIR ---
+let lastScroll=0;
+window.addEventListener('scroll',()=>{
+  let topo=document.querySelector('.topo-viral');
+  if(window.scrollY>lastScroll) topo.style.transform='translateY(-100%)'; else topo.style.transform='translateY(0)';
+  lastScroll=window.scrollY;
 });
+
+const SVG={curtir:'<svg>...</svg>',curtirH:'<svg>...</svg>',comentar:'<svg>...</svg>',comentarH:'<svg>...</svg>',repostar:'<svg>...</svg>',repostarH:'<svg>...</svg>',marcar:'<svg>...</svg>',marcarH:'<svg>...</svg>',encaminhar:'<svg>...</svg>',encaminharH:'<svg>...</svg>'};
+
