@@ -44,15 +44,6 @@
         .toggle-password:hover, .toggle-password:active { color: #ffffff; }
         .toggle-password svg { width: 20px; height: 20px; }
 
-        /* CAMPOS DO CÓDIGO DE 6 DÍGITOS */
-        .otp-container { display: flex; gap: 8px; justify-content: center; margin: 20px 0; }
-        .otp-input {
-            width: 44px; height: 52px; background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 12px;
-            text-align: center; font-size: 20px; font-weight: 700; color: #ffffff; outline: none;
-        }
-        .otp-input:focus { border-color: #ffffff; }
-
         .btn-submit {
             width: 100%; height: 48px; background: #ffffff; color: #000000;
             border: none; border-radius: 24px; font-size: 15px; font-weight: 700;
@@ -100,22 +91,16 @@
             <button type="button" class="btn-submit" id="btnGoToStep2">CONTINUAR</button>
         </div>
 
-        <!-- ETAPA 2: VALIDAR CÓDIGO DE 6 DÍGITOS (ESCONDIDO INICIALMENTE) -->
+        <!-- ETAPA 2: CONFIRMAR O E-MAIL PELO LINK (ESCONDIDO INICIALMENTE) -->
         <div id="step2Form" style="width: 100%; display: none;">
-            <p style="font-size: 13px; color: #8e8e93; text-align: center; margin-bottom: 10px;">
-                Enviamos um código de 6 dígitos para o seu e-mail.
+            <p style="font-size: 13px; color: #8e8e93; text-align: center; margin-bottom: 8px;">
+                Enviamos um link de confirmação para o seu e-mail.
+            </p>
+            <p style="font-size: 13px; color: #ffffff; text-align: center; margin-bottom: 18px;">
+                Abra o e-mail e toque no link para ativar a conta.
             </p>
 
-            <div class="otp-container">
-                <input type="text" maxlength="1" class="otp-input">
-                <input type="text" maxlength="1" class="otp-input">
-                <input type="text" maxlength="1" class="otp-input">
-                <input type="text" maxlength="1" class="otp-input">
-                <input type="text" maxlength="1" class="otp-input">
-                <input type="text" maxlength="1" class="otp-input">
-            </div>
-
-            <button type="button" class="btn-submit" id="btnVerifyCode">CONFIRMAR E ENTRAR</button>
+            <button type="button" class="btn-submit" id="btnResendEmail">REENVIAR E-MAIL</button>
         </div>
 
         <div>
@@ -138,7 +123,8 @@
             }
         });
 
-        const PAGINA_PERFIL = new URL('perfil.html', window.location.href).href;
+        // Página do perfil que já existe no projeto (passo 1)
+        const PAGINA_PERFIL = window.location.href.replace(/[?#].*$/, '').replace(/[^/]*$/, '') + 'passo1.html';
 
         /* ===============================================================
            2. ELEMENTOS
@@ -152,8 +138,7 @@
         const togglePassBtn = document.getElementById('togglePassBtn');
         const eyeIcon = document.getElementById('eyeIcon');
         const btnGoToStep2 = document.getElementById('btnGoToStep2');
-        const btnVerifyCode = document.getElementById('btnVerifyCode');
-        const otpInputs = Array.from(document.querySelectorAll('.otp-input'));
+        const btnResendEmail = document.getElementById('btnResendEmail');
 
         /* ===============================================================
            3. ALTERNÂNCIA DO OLHO DO INSTAGRAM
@@ -175,62 +160,14 @@
         /* ===============================================================
            4. NAVEGAÇÃO ENTRE ETAPAS
            =============================================================== */
-        function irParaCodigo() {
+        function irParaConfirmacao() {
             step1Form.style.display = 'none';
             step2Form.style.display = 'block';
             stepSubtitle.innerText = 'CONFIRMAÇÃO';
-            otpInputs[0].focus();
-        }
-
-        function limparCodigo() {
-            otpInputs.forEach(input => { input.value = ''; });
-            otpInputs[0].focus();
-        }
-
-        function lerCodigo() {
-            return otpInputs.map(input => input.value).join('');
         }
 
         /* ===============================================================
-           5. CAIXAS DO CÓDIGO: SÓ NÚMEROS, COLAR, BACKSPACE E ENTER
-           =============================================================== */
-        otpInputs.forEach((input, index) => {
-            input.setAttribute('inputmode', 'numeric');
-            input.setAttribute('pattern', '[0-9]*');
-            input.setAttribute('autocomplete', index === 0 ? 'one-time-code' : 'off');
-
-            input.addEventListener('input', () => {
-                input.value = input.value.replace(/\D/g, '').slice(-1);
-                if (input.value && index < otpInputs.length - 1) {
-                    otpInputs[index + 1].focus();
-                }
-            });
-
-            input.addEventListener('keydown', (e) => {
-                if (e.key === 'Backspace' && !input.value && index > 0) {
-                    otpInputs[index - 1].focus();
-                    otpInputs[index - 1].value = '';
-                }
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    btnVerifyCode.click();
-                }
-            });
-
-            input.addEventListener('paste', (e) => {
-                const texto = (e.clipboardData || window.clipboardData).getData('text') || '';
-                const digitos = texto.replace(/\D/g, '').slice(0, 6);
-                if (!digitos) return;
-                e.preventDefault();
-                digitos.split('').forEach((digito, i) => {
-                    if (otpInputs[i]) otpInputs[i].value = digito;
-                });
-                otpInputs[Math.min(digitos.length, otpInputs.length - 1)].focus();
-            });
-        });
-
-        /* ===============================================================
-           6. ETAPA 1 -> ENVIA O CÓDIGO DE 6 DÍGITOS
+           5. ETAPA 1 -> ENVIA O LINK DE CONFIRMAÇÃO
            =============================================================== */
         btnGoToStep2.addEventListener('click', async () => {
             const username = usernameField.value.trim().replace(/^@/, '');
@@ -256,7 +193,8 @@
                 email: email,
                 password: password,
                 options: {
-                    data: { username_handle: username }
+                    data: { username_handle: username },
+                    emailRedirectTo: PAGINA_PERFIL
                 }
             });
 
@@ -280,47 +218,37 @@
             }
 
             usernameField.value = username;
-            irParaCodigo();
-            alert('Enviamos um código de 6 dígitos para ' + email + '.');
+            irParaConfirmacao();
+            alert('Enviamos um link de confirmação para ' + email + '.');
         });
 
         /* ===============================================================
-           7. ETAPA 2 -> VALIDA O CÓDIGO E ENTRA
+           6. ETAPA 2 -> REENVIA O LINK DE CONFIRMAÇÃO
            =============================================================== */
-        btnVerifyCode.addEventListener('click', async () => {
-            const token = lerCodigo();
+        btnResendEmail.addEventListener('click', async () => {
             const email = emailField.value.trim().toLowerCase();
 
-            if (token.length !== 6) {
-                alert('Digite os 6 dígitos do código!');
+            if (!email) {
+                alert('Digite o seu e-mail.');
                 return;
             }
 
-            btnVerifyCode.disabled = true;
+            btnResendEmail.disabled = true;
 
-            const { data, error } = await supabaseClient.auth.verifyOtp({
+            const { error } = await supabaseClient.auth.resend({
+                type: 'signup',
                 email: email,
-                token: token,
-                type: 'signup'
+                options: { emailRedirectTo: PAGINA_PERFIL }
             });
 
-            btnVerifyCode.disabled = false;
+            btnResendEmail.disabled = false;
 
-            if (!error) {
-                window.location.replace(PAGINA_PERFIL);
+            if (error) {
+                alert('Não foi possível reenviar: ' + error.message);
                 return;
             }
 
-            // Código expirado: pedimos um novo automaticamente
-            if (error.code === 'otp_expired' || /expired/i.test(error.message)) {
-                await supabaseClient.auth.resend({ type: 'signup', email: email });
-                limparCodigo();
-                alert('O código expirou. Enviamos um novo código para o seu e-mail.');
-                return;
-            }
-
-            limparCodigo();
-            alert('Código inválido. Confira os 6 dígitos e tente novamente.');
+            alert('Reenviamos o link de confirmação para ' + email + '.');
         });
 
         /* ===============================================================
@@ -336,8 +264,8 @@
             }
 
             if (params.get('verificar') === '1' && emailParam) {
-                irParaCodigo();
-                alert('Confirme o seu e-mail. Enviamos um novo código de 6 dígitos.');
+                irParaConfirmacao();
+                alert('Confirme o seu e-mail. Enviamos um novo link de confirmação.');
                 return;
             }
 
@@ -348,4 +276,4 @@
         });
     </script>
 </body>
-</html>
+        </html>
