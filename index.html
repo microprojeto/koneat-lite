@@ -291,15 +291,31 @@
     </div>
 
     <script>
-        // 1. CONFIGURAÇÃO COM AS SUAS CHAVES REAIS DO SUPABASE
+        /* ===============================================================
+           1. CLIENTE SUPABASE
+           =============================================================== */
         const SUPABASE_URL = 'https://aerhvhowzteqezqvhtmg.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_N0XY12nN2CAdEmI4FCGSaA__y0NNKkO';
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // 2. ALTERNÂNCIA DO OLHO DO INSTAGRAM
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+            auth: {
+                persistSession: true,
+                autoRefreshToken: true,
+                detectSessionInUrl: true
+            }
+        });
+
+        // Destino absoluto depois de autenticar (obrigatório no OAuth)
+        const PAGINA_PERFIL = new URL('perfil.html', window.location.href).href;
+
+        /* ===============================================================
+           2. ALTERNÂNCIA DO OLHO DO INSTAGRAM
+           =============================================================== */
         const passwordField = document.getElementById('passwordField');
         const togglePassBtn = document.getElementById('togglePassBtn');
         const eyeIcon = document.getElementById('eyeIcon');
+        const btnSubmit = document.getElementById('btnSubmit');
+        const btnGoogle = document.getElementById('btnGoogle');
 
         const openEyeSVG = `<path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zm0 12.5c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>`;
         const closedEyeSVG = `<path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.44-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2z"/>`;
@@ -310,44 +326,86 @@
             eyeIcon.innerHTML = isPassword ? closedEyeSVG : openEyeSVG;
         });
 
-        // 3. AUTO REDIRECIONAR SE JÁ ESTIVER LOGADO
+        /* ===============================================================
+           3. SE JÁ HOUVER SESSÃO, VAI DIRETO PARA O PERFIL
+           =============================================================== */
         window.addEventListener('DOMContentLoaded', async () => {
-            const { data: { session } } = await supabaseClient.auth.getSession();
-            if (session) {
-                window.location.href = 'perfil.html';
+            const { data } = await supabaseClient.auth.getSession();
+            if (data && data.session) {
+                window.location.replace(PAGINA_PERFIL);
             }
         });
 
-        // 4. SUBMIT DO FORMULÁRIO DE LOGIN
+        /* ===============================================================
+           4. LOGIN COM E-MAIL E SENHA
+           =============================================================== */
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+
             const email = document.getElementById('emailField').value.trim().toLowerCase();
             const password = passwordField.value;
 
+            if (!email || !password) {
+                alert('Preencha o e-mail e a senha.');
+                return;
+            }
+
+            btnSubmit.disabled = true;
+
             const { data, error } = await supabaseClient.auth.signInWithPassword({
                 email: email,
-                password: password,
+                password: password
             });
 
+            btnSubmit.disabled = false;
+
+            if (!error) {
+                window.location.replace(PAGINA_PERFIL);
+                return;
+            }
+
+            // E-mail criado mas o código de 6 dígitos ainda não foi confirmado
+            if (error.code === 'email_not_confirmed' || /not confirmed/i.test(error.message)) {
+                await supabaseClient.auth.resend({ type: 'signup', email: email });
+                window.location.href = 'cadastro.html?email=' + encodeURIComponent(email) + '&verificar=1';
+                return;
+            }
+
+            if (error.code === 'invalid_credentials' || /invalid login credentials/i.test(error.message)) {
+                alert('E-mail ou senha incorretos.');
+                return;
+            }
+
+            alert('Erro ao entrar: ' + error.message);
+        });
+
+        /* ===============================================================
+           5. LOGIN COM GOOGLE
+           redirectTo tem de ser uma URL absoluta registrada em
+           Authentication > URL Configuration > Redirect URLs
+           =============================================================== */
+        btnGoogle.addEventListener('click', async () => {
+            if (btnGoogle.disabled) return;
+            btnGoogle.disabled = true;
+
+            const { error } = await supabaseClient.auth.signInWithOAuth({
+                provider: 'google',
+                options: {
+                    redirectTo: PAGINA_PERFIL,
+                    queryParams: { prompt: 'select_account' }
+                }
+            });
+
+            // Se não houver erro, o browser é redirecionado automaticamente.
             if (error) {
-                alert('Erro ao entrar: ' + error.message);
-            } else {
-                window.location.href = 'perfil.html';
+                btnGoogle.disabled = false;
+                alert('Erro com Google: ' + error.message);
             }
         });
 
-        // 5. LOGIN COM GOOGLE
-        document.getElementById('btnGoogle').addEventListener('click', async () => {
-            const { data, error } = await supabaseClient.auth.signInWithOAuth({
-                provider: 'google',
-                options: {
-                    redirectTo: window.location.origin + '/perfil.html'
-                }
-            });
-            if (error) alert('Erro com Google: ' + error.message);
-        });
-
-        // 6. LINKS DO RODAPÉ
+        /* ===============================================================
+           6. LINKS DO RODAPÉ
+           =============================================================== */
         document.getElementById('btnSignUp').addEventListener('click', () => {
             window.location.href = 'cadastro.html';
         });
