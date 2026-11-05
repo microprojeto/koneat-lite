@@ -306,7 +306,8 @@
         });
 
         // Destino absoluto depois de autenticar (obrigatório no OAuth)
-        const PAGINA_PERFIL = new URL('perfil.html', window.location.href).href;
+        // Página do perfil que já existe no projeto (passo 1)
+        const PAGINA_PERFIL = window.location.href.replace(/[?#].*$/, '').replace(/[^/]*$/, '') + 'passo1.html';
 
         /* ===============================================================
            2. ALTERNÂNCIA DO OLHO DO INSTAGRAM
@@ -364,9 +365,13 @@
                 return;
             }
 
-            // E-mail criado mas o código de 6 dígitos ainda não foi confirmado
+            // E-mail criado mas o link de confirmação ainda não foi aberto
             if (error.code === 'email_not_confirmed' || /not confirmed/i.test(error.message)) {
-                await supabaseClient.auth.resend({ type: 'signup', email: email });
+                await supabaseClient.auth.resend({
+                    type: 'signup',
+                    email: email,
+                    options: { emailRedirectTo: PAGINA_PERFIL }
+                });
                 window.location.href = 'cadastro.html?email=' + encodeURIComponent(email) + '&verificar=1';
                 return;
             }
