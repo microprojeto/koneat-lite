@@ -323,10 +323,25 @@
     <main class="reels-feed-container" id="reelsContainer"></main>
 
     <nav class="bottom-nav-fixed">
-        <a href="./home.html" class="nav-link"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></a>
-        <a href="./criar.html" class="nav-link"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></a>
-        <a href="./passo2.html" class="nav-link active-video"><svg width="24" height="24" viewBox="0 0 24 24"><rect class="video-box-filled" x="2" y="2" width="20" height="20" rx="5" fill="#ffffff"></rect><polygon class="video-play-inner" points="10,8 16,12 10,16" fill="#121214"></polygon></svg></a>
-        <a href="./passo1.html" class="nav-link"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></a>
+        <!-- 1. Vai para o Passo 4 (Home / Feed) -->
+        <a href="./passo4.html" class="nav-link">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        </a>
+
+        <!-- 2. Vai para o Passo 3 (Criar / Plus) -->
+        <a href="./passo3.html" class="nav-link">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        </a>
+
+        <!-- 3. Continua no Passo 2 (Vídeos - Ativo) -->
+        <a href="./passo2.html" class="nav-link active-video">
+            <svg width="24" height="24" viewBox="0 0 24 24"><rect class="video-box-filled" x="2" y="2" width="20" height="20" rx="5" fill="#ffffff"></rect><polygon class="video-play-inner" points="10,8 16,12 10,16" fill="#121214"></polygon></svg>
+        </a>
+
+        <!-- 4. Vai para o Passo 1 (Perfil) -->
+        <a href="./passo1.html" class="nav-link">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        </a>
     </nav>
 
     <script>
@@ -457,10 +472,4 @@
                             iconPause.style.display = 'block';
                         } else {
                             video.pause();
-                            iconPlay.style.display = 'block';
-                            iconPause.style.display = 'none';
-                        }
-
-                        playPauseIndicator.classList.add('show');
-                        setTimeout(() => {
-                            playPauseIndicator.classList.remove('show');
+                      
