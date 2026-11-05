@@ -2,85 +2,359 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Koneat Lite - Login</title>
-    <link rel="stylesheet" href="css/style.css">
+    <!-- Supabase JS Client SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100vh;
+            height: 100dvh;
+            margin: 0;
+            padding: 0;
+            background: #000000;
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* CONTAINER PRINCIPAL DO LOGIN (390x844px Max, Tela Cheia sem Scroll) */
+        .app-screen {
+            width: 100%;
+            max-width: 390px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: calc(env(safe-area-inset-top) + 24px) 24px calc(env(safe-area-inset-bottom) + 24px) 24px;
+            position: relative;
+        }
+
+        /* TOPO: LOGO E TÍTULOS */
+        .logo-area {
+            text-align: center;
+            margin-top: 16px;
+        }
+
+        .logo-text {
+            font-size: 28px;
+            font-weight: 800;
+            margin: 0;
+            line-height: 1;
+        }
+
+        .brand-name {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin: 4px 0 0 0;
+        }
+
+        .brand-name span {
+            font-weight: 300;
+            color: #8e8e93;
+        }
+
+        .subtitle {
+            font-size: 11px;
+            letter-spacing: 2px;
+            color: #8e8e93;
+            margin-top: 4px;
+            text-transform: uppercase;
+        }
+
+        /* FORMULÁRIO E CAMPOS TIPO PÍLULA */
+        .form-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group {
+            width: 100%;
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .input-label {
+            font-size: 13px;
+            font-weight: 500;
+            color: #ffffff;
+        }
+
+        .input-wrapper {
+            position: relative;
+            width: 100%;
+            height: 48px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+        }
+
+        .input-wrapper:focus-within {
+            border-color: #ffffff;
+        }
+
+        .input-field {
+            width: 100%;
+            background: none;
+            border: none;
+            outline: none;
+            color: #ffffff;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .input-field::placeholder {
+            color: #8e8e93;
+        }
+
+        /* BOTÃO DE OLHO ESTILO INSTAGRAM (SÓ NO CAMPO SENHA) */
+        .toggle-password {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #8e8e93;
+            transition: color 0.2s ease;
+        }
+
+        .toggle-password:hover, .toggle-password:active {
+            color: #ffffff;
+        }
+
+        .toggle-password svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* BOTÃO ENTRAR PÍLULA BRANCA */
+        .btn-submit {
+            width: 100%;
+            height: 48px;
+            background: #ffffff;
+            color: #000000;
+            border: none;
+            border-radius: 24px;
+            font-size: 15px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+
+        /* DIVISOR OU */
+        .divider-container {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            color: #8e8e93;
+            font-size: 13px;
+        }
+
+        .divider-container::before,
+        .divider-container::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .divider-container span {
+            padding: 0 12px;
+        }
+
+        /* BOTÃO GOOGLE COM DIVISÓRIA VERTICAL */
+        .btn-google {
+            width: 100%;
+            height: 48px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 24px;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .google-icon-wrapper {
+            display: flex;
+            align-items: center;
+            padding-right: 12px;
+            border-right: 1px solid rgba(255, 255, 255, 0.15);
+            margin-right: 12px;
+        }
+
+        /* RODAPÉ EM CINZA FOSCO COM SUBLINHADO */
+        .footer-links {
+            margin-bottom: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            font-size: 13px;
+        }
+
+        .footer-link {
+            color: #8e8e93;
+            text-decoration: underline;
+            text-underline-offset: 4px;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .footer-link:active, .footer-link:hover {
+            color: #ffffff;
+        }
+    </style>
 </head>
 <body>
 
-    <!-- Container Principal do Login -->
-    <main class="login-container">
-        <!-- Logo e Títulos Premium -->
+    <div class="app-screen">
+        <!-- TOPO -->
         <div class="logo-area">
             <h1 class="logo-text">K.</h1>
             <h2 class="brand-name">KONEΛT <span>LITE</span></h2>
             <p class="subtitle">O COMEÇO</p>
         </div>
 
-        <!-- Formulário de Login -->
-        <form action="passo1.html" method="GET" class="login-form">
-            <div class="input-group">
-                <label for="email">E-mail</label>
-                <div class="input-wrapper">
-                    <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                        <polyline points="22,6 12,13 2,6"></polyline>
-                    </svg>
-                    <input type="email" id="email" name="email" placeholder="Digite seu e-mail." required>
+        <!-- FORMULÁRIO DE LOGIN -->
+        <div class="form-container">
+            <form id="loginForm">
+                <div class="input-group">
+                    <label class="input-label" for="emailField">E-mail</label>
+                    <div class="input-wrapper">
+                        <input type="email" id="emailField" class="input-field" placeholder="Digite seu e-mail." required autocomplete="email">
+                    </div>
                 </div>
+
+                <div class="input-group">
+                    <label class="input-label" for="passwordField">Senha</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="passwordField" class="input-field" placeholder="Digite sua senha." required autocomplete="current-password">
+                        <button type="button" class="toggle-password" id="togglePassBtn" aria-label="Alternar senha">
+                            <svg id="eyeIcon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zm0 12.5c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit" id="btnSubmit">
+                    ENTRAR 
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </button>
+            </form>
+
+            <div class="divider-container">
+                <span>Ou</span>
             </div>
 
-            <div class="input-group">
-                <label for="password">Senha</label>
-                <div class="input-wrapper">
-                    <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                    </svg>
-                    <input type="password" id="password" name="password" placeholder="Digite sua senha." required>
-                    <button type="button" class="toggle-password" id="togglePassword" aria-label="Mostrar Senha">
-                        <svg class="eye-icon" id="eyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                            <circle cx="12" cy="12" r="3"></circle>
-                        </svg>
-                    </button>
+            <button type="button" class="btn-google" id="btnGoogle">
+                <div class="google-icon-wrapper">
+                    <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.19v3.15C3.17 21.36 7.25 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.19C.43 8.1 0 9.81 0 12s.43 3.9 1.19 5.42l4.09-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.25 0 3.17 2.64 1.19 6.58l4.09 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/></svg>
                 </div>
-            </div>
-
-            <button type="submit" class="btn-primary">
-                ENTRAR <span>→</span>
+                Entrar com Google
             </button>
-        </form>
-
-        <div class="divider">
-            <span>Ou</span>
         </div>
 
-        <!-- Botão Google -->
-        <button type="button" class="btn-google">
-            <div class="google-icon-wrapper">
-                <svg viewBox="0 0 24 24" width="18" height="18">
-                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-                </svg>
-            </div>
-            <span class="google-divider"></span>
-            <span class="google-text">Entrar com Google</span>
-        </button>
+        <!-- RODAPÉ COMPACTO CINZA -->
+        <div class="footer-links">
+            <a id="btnSignUp" class="footer-link">Criar nova conta</a>
+            <a id="btnForgot" class="footer-link">Recuperar acesso</a>
+        </div>
+    </div>
 
-        <!-- Links Úteis Organizados em Linhas Corretas -->
-        <footer class="login-footer">
-            <div class="footer-row">
-                <span>Não tem conta?</span> <a href="cadastro.html">Fazer cadastro</a>
-            </div>
-            <div class="footer-row">
-                <span>Esqueceu sua senha?</span> <a href="recuperar.html">Recuperar acesso</a>
-            </div>
-        </footer>
-    </main>
+    <script>
+        // 1. CONFIGURAÇÃO COM AS SUAS CHAVES REAIS DO SUPABASE
+        const SUPABASE_URL = 'https://dqazufjeldpodhdgvcpt.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_tWV7CzBUNVZJIQi-o24DyQ_H-qzGC4A';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    <script src="js/app.js"></script>
+        // 2. ALTERNÂNCIA DO OLHO DO INSTAGRAM
+        const passwordField = document.getElementById('passwordField');
+        const togglePassBtn = document.getElementById('togglePassBtn');
+        const eyeIcon = document.getElementById('eyeIcon');
+
+        const openEyeSVG = `<path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zm0 12.5c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>`;
+        const closedEyeSVG = `<path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.44-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2z"/>`;
+
+        togglePassBtn.addEventListener('click', () => {
+            const isPassword = passwordField.getAttribute('type') === 'password';
+            passwordField.setAttribute('type', isPassword ? 'text' : 'password');
+            eyeIcon.innerHTML = isPassword ? closedEyeSVG : openEyeSVG;
+        });
+
+        // 3. AUTO REDIRECIONAR SE JÁ ESTIVER LOGADO
+        window.addEventListener('DOMContentLoaded', async () => {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (session) {
+                window.location.href = 'perfil.html';
+            }
+        });
+
+        // 4. SUBMIT DO FORMULÁRIO DE LOGIN
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('emailField').value.trim().toLowerCase();
+            const password = passwordField.value;
+
+            const { data, error } = await supabaseClient.auth.signInWithPassword({
+                email: email,
+                password: password,
+            });
+
+            if (error) {
+                alert('Erro ao entrar: ' + error.message);
+            } else {
+                window.location.href = 'perfil.html';
+            }
+        });
+
+        // 5. LOGIN COM GOOGLE
+        document.getElementById('btnGoogle').addEventListener('click', async () => {
+            const { data, error } = await supabaseClient.auth.signInWithOAuth({
+                provider: 'google',
+                options: {
+                    redirectTo: window.location.origin + '/perfil.html'
+                }
+            });
+            if (error) alert('Erro com Google: ' + error.message);
+        });
+
+        // 6. LINKS DO RODAPÉ
+        document.getElementById('btnSignUp').addEventListener('click', () => {
+            window.location.href = 'cadastro.html';
+        });
+
+        document.getElementById('btnForgot').addEventListener('click', () => {
+            window.location.href = 'recuperar.html';
+        });
+    </script>
 </body>
-  </html>
+</html>
