@@ -2,183 +2,295 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Koneat - Criar Publicação</title>
     <link rel="stylesheet" href="css/style.css">
+
     <style>
-        body.dark-create-theme {
-            background-color: #000000;
-            color: #ffffff;
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body.dark-create-theme {
+            width: 100%;
+            height: 100%;
+            height: 100dvh;
             margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            overflow: hidden;
-            height: 100vh;
+            padding: 0;
+            overflow: hidden !important;
+            overscroll-behavior: none;
+            background: #000;
+            color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont,
+                "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body.dark-create-theme {
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            position: fixed;
+            inset: 0;
         }
+
+        /* CABEÇALHO SUPERIOR */
 
         .create-header {
+            height: 64px;
+            min-height: 64px;
+            width: 100%;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 16px 20px;
+            padding: 0 16px;
+            background: #000;
+            border-bottom: 1px solid rgba(255,255,255,.07);
+            flex-shrink: 0;
             z-index: 20;
-            background: #000000;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
 
-        .btn-close {
-            background: none;
-            border: none;
-            color: #ffffff;
-            cursor: pointer;
-            padding: 4px;
-            display: flex;
-            align-items: center;
-        }
-
-        .type-selector-tabs {
-            display: flex;
-            gap: 16px;
-        }
-
-        .type-tab {
-            background: none;
-            border: none;
-            color: #8e8e93;
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 4px 0;
-            transition: color 0.2s;
-        }
-
-        .type-tab.active {
-            color: #ffffff;
-            border-bottom: 2px solid #ffffff;
-        }
-
-        .btn-advance-top {
-            background: transparent;
-            color: #8e8e93;
-            border: none;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: not-allowed;
-            padding: 6px 12px;
-            border-radius: 8px;
-            transition: 0.2s;
-        }
-
-        .btn-advance-top.active {
-            color: #00ff88;
-            cursor: pointer;
-        }
-
-        .btn-advance-top.active:active {
-            transform: scale(0.95);
-        }
-
-        .gallery-controls-bar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 20px;
-            z-index: 10;
-        }
-
-        .btn-gallery-dropdown {
-            background: none;
-            border: none;
-            color: #ffffff;
-            font-size: 16px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-        }
-
-        .right-controls {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .icon-circle-btn {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: #262626;
-            border: none;
-            color: #ffffff;
+        .btn-close,
+        .icon-btn-header {
             display: flex;
             align-items: center;
             justify-content: center;
+            background: none;
+            border: none;
+            color: #fff;
+            padding: 5px;
+            text-decoration: none;
             cursor: pointer;
+            flex-shrink: 0;
         }
 
-        .create-preview-area {
+        .type-selector-tabs {
             flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #8e8e93;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            background: #000000;
+            gap: clamp(18px, 6vw, 32px);
+            height: 100%;
         }
 
-        .create-preview-area video, 
-        .create-preview-area img {
-            width: 100%;
+        .type-tab {
+            position: relative;
             height: 100%;
+            display: flex;
+            align-items: center;
+            background: none;
+            border: none;
+            padding: 0;
+            color: #8e8e93;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: .4px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .type-tab.active {
+            color: #fff;
+        }
+
+        .type-tab.active::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: #fff;
+            border-radius: 3px 3px 0 0;
+        }
+
+        .header-right-controls {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            min-width: 28px;
+        }
+
+        /* SEGUNDA LINHA: GALERIA + AVANÇAR */
+
+        .create-toolbar {
+            width: 100%;
+            height: 72px;
+            min-height: 72px;
+            padding: 0 22px 0 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #000;
+            flex-shrink: 0;
+            z-index: 15;
+        }
+
+        .gallery-title-bar {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            background: transparent;
+            border: none;
+            color: #fff;
+            padding: 8px 0;
+            font-size: 19px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* BOTÃO AVANÇAR - CANTO SUPERIOR DIREITO */
+
+        .btn-advance {
+            height: 46px;
+            min-width: 126px;
+            padding: 0 22px;
+            border: none;
+            border-radius: 30px;
+            background: #fff;
+            color: #000;
+            font-size: 16px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: not-allowed;
+            opacity: .35;
+            transition: opacity .2s, transform .2s;
+        }
+
+        .btn-advance.active {
+            opacity: 1;
+            cursor: pointer;
+        }
+
+        .btn-advance.active:active {
+            transform: scale(.96);
+        }
+
+        /* ÁREA CENTRAL */
+
+        .create-main-container {
+            flex: 1;
+            min-height: 0;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .create-preview-area {
+            flex: 1;
+            min-height: 0;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .create-preview-area img,
+        .create-preview-area video {
+            display: block;
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
             object-fit: contain;
         }
 
+        .create-preview-area video {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* ESTADO VAZIO */
+
+        .empty-preview-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+            text-align: center;
+            color: #8e8e93;
+            padding: 20px;
+        }
+
+        .empty-preview-icon {
+            opacity: .65;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .empty-preview-icon svg {
+            width: 90px;
+            height: 90px;
+        }
+
+        .empty-preview-text {
+            margin: 0;
+            font-size: 17px;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        /* MODAL DE LEGENDA */
+
         .caption-modal {
             position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.95);
+            inset: 0;
             z-index: 100;
             display: none;
             flex-direction: column;
-            padding: 20px;
-            box-sizing: border-box;
+            padding:
+                calc(20px + env(safe-area-inset-top))
+                20px
+                calc(20px + env(safe-area-inset-bottom));
+            background: #000;
+            overflow: hidden;
         }
 
-        .caption-modal.show { display: flex; }
+        .caption-modal.show {
+            display: flex;
+        }
 
         .caption-header {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
             margin-bottom: 24px;
+            min-height: 42px;
         }
 
-        .caption-header h2 { font-size: 18px; margin: 0; font-weight: 700; }
+        .caption-header h2 {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0;
+        }
 
-        .btn-back-caption, .btn-publish-final {
+        .btn-back-caption,
+        .btn-publish-final {
             background: none;
             border: none;
-            color: #ffffff;
+            color: #fff;
             font-size: 15px;
             font-weight: 700;
             cursor: pointer;
         }
 
-        .btn-publish-final { color: #00ff88; }
+        .btn-publish-final {
+            color: #00ff88;
+        }
 
         .caption-body {
             display: flex;
-            gap: 16px;
             align-items: flex-start;
+            gap: 16px;
         }
 
         .caption-thumbnail {
@@ -186,7 +298,7 @@
             height: 84px;
             border-radius: 12px;
             object-fit: cover;
-            background: #222222;
+            background: #222;
         }
 
         .caption-textarea {
@@ -194,48 +306,53 @@
             height: 120px;
             background: transparent;
             border: none;
-            color: #ffffff;
-            font-size: 15px;
-            resize: none;
             outline: none;
+            resize: none;
+            color: #fff;
             font-family: inherit;
+            font-size: 15px;
         }
 
-        .caption-textarea::placeholder { color: #8e8e93; }
+        .caption-textarea::placeholder {
+            color: #8e8e93;
+        }
+
+        /* CARREGAMENTO */
 
         .loading-overlay {
             position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(8px);
+            inset: 0;
             z-index: 200;
             display: none;
             align-items: center;
             justify-content: center;
+            background: rgba(0,0,0,.88);
+            backdrop-filter: blur(8px);
         }
 
-        .loading-overlay.show { display: flex; }
+        .loading-overlay.show {
+            display: flex;
+        }
 
         .loading-box {
-            background: #18181b;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 24px 28px;
-            border-radius: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 16px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+            padding: 26px 30px;
+            background: #18181b;
+            border: 1px solid rgba(255,255,255,.1);
+            border-radius: 20px;
             text-align: center;
         }
 
         .spinner {
             width: 32px;
             height: 32px;
-            border: 3px solid rgba(255, 255, 255, 0.2);
+            border: 3px solid rgba(255,255,255,.2);
             border-top-color: #00ff88;
             border-radius: 50%;
-            animation: spin 0.8s linear infinite;
+            animation: spin .8s linear infinite;
         }
 
         @keyframes spin {
@@ -245,66 +362,205 @@
         .loading-text {
             font-size: 15px;
             font-weight: 600;
-            color: #ffffff;
+        }
+
+        /* TELAS MENORES */
+
+        @media (max-width: 360px) {
+            .create-header {
+                padding: 0 10px;
+            }
+
+            .type-selector-tabs {
+                gap: 15px;
+            }
+
+            .type-tab {
+                font-size: 13px;
+            }
+
+            .create-toolbar {
+                padding: 0 14px;
+            }
+
+            .btn-advance {
+                min-width: 112px;
+                height: 43px;
+            }
         }
     </style>
 </head>
+
 <body class="dark-create-theme">
 
+    <!-- CABEÇALHO -->
     <header class="create-header">
-        <a href="./passo1.html" class="btn-close" aria-label="Fechar">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+
+        <a href="./passo1.html"
+           class="btn-close"
+           aria-label="Fechar">
+
+            <svg width="25" height="25"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2.5"
+                 stroke-linecap="round">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+
         </a>
 
         <div class="type-selector-tabs">
-            <button type="button" class="type-tab active" data-type="post">POST</button>
-            <button type="button" class="type-tab" data-type="story">STORY</button>
-            <button type="button" class="type-tab" data-type="virais">VIRAIS</button>
+
+            <button class="type-tab active" data-type="post">
+                POST
+            </button>
+
+            <button class="type-tab" data-type="video">
+                VÍDEO
+            </button>
+
+            <button class="type-tab" data-type="viral">
+                VIRAL
+            </button>
+
         </div>
 
-        <button type="button" class="btn-advance-top" id="btnAdvance">Avançar</button>
+        <div class="header-right-controls">
+
+            <button class="icon-btn-header"
+                    type="button"
+                    aria-label="Seleção múltipla">
+
+                <svg width="25" height="25"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2"/>
+                    <path d="M9 3v18"/>
+                </svg>
+
+            </button>
+
+        </div>
+
     </header>
 
-    <div class="gallery-controls-bar">
-        <button type="button" class="btn-gallery-dropdown">
+    <!-- SEGUNDA LINHA -->
+    <div class="create-toolbar">
+
+        <button class="gallery-title-bar"
+                id="gallerySelectorBtn">
+
             Galeria
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+
+            <svg width="17" height="17"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2.5">
+                <polyline points="6 9 12 15 18 9"/>
+            </svg>
+
         </button>
 
-        <div class="right-controls">
-            <button type="button" class="icon-circle-btn" aria-label="Seleção Múltipla">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M9 3v18"></path></svg>
-            </button>
-            <button type="button" class="icon-circle-btn" id="openCameraBtn" aria-label="Câmera">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
-            </button>
-        </div>
+        <button type="button"
+                class="btn-advance"
+                id="btnAdvance"
+                disabled>
+
+            Avançar
+
+        </button>
+
     </div>
 
-    <main class="create-preview-area" id="previewContainer">
-        <span id="previewText">Crie um post</span>
+    <!-- PREVIEW CENTRAL -->
+    <main class="create-main-container">
+
+        <div class="create-preview-area" id="previewContainer">
+
+            <div class="empty-preview-state" id="emptyStateDisplay">
+
+                <div class="empty-preview-icon">
+
+                    <svg viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="1.5">
+
+                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+
+                        <circle cx="12" cy="13" r="4"/>
+
+                    </svg>
+
+                </div>
+
+                <p class="empty-preview-text">
+                    Capture o momento com um amigo
+                </p>
+
+            </div>
+
+        </div>
+
     </main>
 
+    <!-- MODAL DE LEGENDA -->
     <div class="caption-modal" id="captionModal">
+
         <div class="caption-header">
-            <button type="button" class="btn-back-caption" id="closeModalBtn">Voltar</button>
+
+            <button class="btn-back-caption" id="closeModalBtn">
+                Voltar
+            </button>
+
             <h2>Nova publicação</h2>
-            <button type="button" class="btn-publish-final" id="publishFinalBtn">Compartilhar</button>
+
+            <button class="btn-publish-final" id="publishFinalBtn">
+                Compartilhar
+            </button>
+
         </div>
+
         <div class="caption-body">
-            <img id="modalThumbnail" class="caption-thumbnail" src="" alt="Thumbnail">
-            <textarea id="postCaptionInput" class="caption-textarea" placeholder="Escreva uma legenda..."></textarea>
+
+            <img id="modalThumbnail"
+                 class="caption-thumbnail"
+                 src=""
+                 alt="Prévia da publicação">
+
+            <textarea id="postCaptionInput"
+                      class="caption-textarea"
+                      placeholder="Escreva uma legenda..."></textarea>
+
         </div>
+
     </div>
 
+    <!-- CARREGAMENTO -->
     <div class="loading-overlay" id="loadingOverlay">
+
         <div class="loading-box">
+
             <div class="spinner"></div>
-            <span class="loading-text">Sua publicação está sendo postada</span>
+
+            <span class="loading-text">
+                Publicando...
+            </span>
+
         </div>
+
     </div>
 
-    <input type="file" id="fileInput" accept="image/*,video/*" style="display: none;">
+    <input type="file"
+           id="fileInput"
+           accept="image/*,video/*"
+           style="display:none;">
 
     <script>
         let selectedType = 'post';
@@ -312,105 +568,204 @@
         let mediaType = null;
 
         const tabs = document.querySelectorAll('.type-tab');
-        const previewText = document.getElementById('previewText');
+
         const fileInput = document.getElementById('fileInput');
         const previewContainer = document.getElementById('previewContainer');
+        const emptyStateDisplay = document.getElementById('emptyStateDisplay');
+
+        const gallerySelectorBtn = document.getElementById('gallerySelectorBtn');
         const btnAdvance = document.getElementById('btnAdvance');
-        const openCameraBtn = document.getElementById('openCameraBtn');
 
         const captionModal = document.getElementById('captionModal');
         const closeModalBtn = document.getElementById('closeModalBtn');
         const publishFinalBtn = document.getElementById('publishFinalBtn');
+
         const modalThumbnail = document.getElementById('modalThumbnail');
         const postCaptionInput = document.getElementById('postCaptionInput');
         const loadingOverlay = document.getElementById('loadingOverlay');
 
+        // TROCA DE CATEGORIA
         tabs.forEach(tab => {
+
             tab.addEventListener('click', () => {
+
                 tabs.forEach(t => t.classList.remove('active'));
+
                 tab.classList.add('active');
-                selectedType = tab.getAttribute('data-type');
-                
-                if (selectedType === 'post') previewText.textContent = 'Crie um post';
-                if (selectedType === 'story') previewText.textContent = 'Crie um story';
-                if (selectedType === 'virais') previewText.textContent = 'Crie um vídeo viral';
+
+                selectedType = tab.dataset.type;
+
+                const emptyText = document.querySelector('.empty-preview-text');
+
+                if (emptyText) {
+
+                    if (selectedType === 'post') {
+                        emptyText.textContent = 'Capture o momento com um amigo';
+                    }
+
+                    if (selectedType === 'video') {
+                        emptyText.textContent = 'Grave ou selecione um vídeo (até 3 min)';
+                    }
+
+                    if (selectedType === 'viral') {
+                        emptyText.textContent = 'Crie um vídeo viral (até 1m30s)';
+                    }
+                }
             });
+
         });
 
-        previewContainer.addEventListener('click', () => fileInput.click());
-        openCameraBtn.addEventListener('click', () => fileInput.click());
+        // ABRIR GALERIA
+        gallerySelectorBtn.addEventListener('click', () => {
+            fileInput.click();
+        });
 
-        // Converte o arquivo para Base64 de forma limpa
+        previewContainer.addEventListener('click', (e) => {
+
+            if (
+                e.target === emptyStateDisplay ||
+                emptyStateDisplay.contains(e.target)
+            ) {
+                fileInput.click();
+            }
+
+        });
+
+        // SELEÇÃO DE ARQUIVO
         fileInput.addEventListener('change', (e) => {
+
             const file = e.target.files[0];
+
             if (!file) return;
 
-            const reader = new FileReader();
-            reader.onload = function(uploadEvent) {
-                mediaDataUrl = uploadEvent.target.result;
-                const isVideo = file.type.startsWith('video');
-                mediaType = isVideo ? 'video' : 'image';
+            const isVideo = file.type.startsWith('video');
+            const fileSizeMB = file.size / (1024 * 1024);
 
-                if (isVideo) {
-                    previewContainer.innerHTML = `<video src="${mediaDataUrl}" controls autoplay playsinline style="width: 100%; height: 100%; object-fit: contain;"></video>`;
-                } else {
-                    previewContainer.innerHTML = `<img src="${mediaDataUrl}" style="width: 100%; height: 100%; object-fit: contain;" />`;
-                }
+            if (!isVideo && !file.type.startsWith('image')) {
+                alert('Formato de arquivo não permitido.');
+                fileInput.value = '';
+                return;
+            }
 
-                modalThumbnail.src = mediaDataUrl;
-                btnAdvance.classList.add('active');
-            };
-            reader.readAsDataURL(file);
-        });
+            if (!isVideo && fileSizeMB > 10) {
+                alert('A imagem é muito grande. O limite máximo é 10MB.');
+                fileInput.value = '';
+                return;
+            }
 
-        btnAdvance.addEventListener('click', () => {
-            if (!mediaDataUrl) return;
-            captionModal.classList.add('show');
-        });
+            if (isVideo && selectedType === 'viral' && fileSizeMB > 50) {
+                alert('O vídeo viral excede o limite de 50MB.');
+                fileInput.value = '';
+                return;
+            }
 
-        closeModalBtn.addEventListener('click', () => {
-            captionModal.classList.remove('show');
-        });
+            if (isVideo && selectedType !== 'viral' && fileSizeMB > 100) {
+                alert('O vídeo excede o limite de 100MB.');
+                fileInput.value = '';
+                return;
+            }
 
-        // Salvamento seguro e redirecionamento direto sem travar o carregamento
-        publishFinalBtn.addEventListener('click', () => {
-            if (!mediaDataUrl) return;
+            if (isVideo) {
 
-            loadingOverlay.classList.add('show');
-            const caption = postCaptionInput.value.trim();
-            const uniqueId = 'post_' + Date.now();
+                const tempVideo = document.createElement('video');
+                const objectUrl = URL.createObjectURL(file);
 
-            setTimeout(() => {
-                const postData = {
-                    id: uniqueId,
-                    url: mediaDataUrl,
-                    type: mediaType,
-                    author: 'Eributtler',
-                    caption: caption
+                tempVideo.preload = 'metadata';
+
+                tempVideo.onloadedmetadata = function() {
+
+                    const duration = tempVideo.duration;
+
+                    URL.revokeObjectURL(objectUrl);
+
+                    if (selectedType === 'video' && duration > 185) {
+                        alert('O vídeo ultrapassa o limite de 3 minutos.');
+                        fileInput.value = '';
+                        return;
+                    }
+
+                    if (selectedType === 'viral' && duration > 95) {
+                        alert('O vídeo ultrapassa o limite de 1 minuto e 30 segundos.');
+                        fileInput.value = '';
+                        return;
+                    }
+
+                    processFile(file);
                 };
 
-                // 1. Salva no perfil (passo1.html)
-                const userPosts = JSON.parse(localStorage.getItem('koneat_user_posts') || '[]');
-                userPosts.unshift(postData);
-                localStorage.setItem('koneat_user_posts', JSON.stringify(userPosts));
+                tempVideo.onerror = function() {
+                    URL.revokeObjectURL(objectUrl);
+                    alert('Não foi possível carregar este vídeo.');
+                    fileInput.value = '';
+                };
 
-                // 2. Se for vídeo ou criado na aba virais, salva também no feed viral (passo2.html)
-                if (mediaType === 'video' || selectedType === 'virais') {
-                    const currentVirais = JSON.parse(localStorage.getItem('koneat_virais_feed') || '[]');
-                    currentVirais.unshift(postData);
-                    localStorage.setItem('koneat_virais_feed', JSON.stringify(currentVirais));
-                }
+                tempVideo.src = objectUrl;
 
-                loadingOverlay.classList.remove('show');
+            } else {
 
-                // Redireciona para o destino correto
-                if (mediaType === 'video' || selectedType === 'virais') {
-                    window.location.href = './passo2.html';
-                } else {
-                    window.location.href = './passo1.html';
-                }
-            }, 1200);
+                processFile(file);
+
+            }
+
         });
-    </script>
-</body>
-  </html>
+
+        // PROCESSAMENTO DA MÍDIA
+        function processFile(file) {
+
+            const reader = new FileReader();
+
+            reader.onload = function(event) {
+
+                mediaDataUrl = event.target.result;
+
+                mediaType = file.type.startsWith('video')
+                    ? 'video'
+                    : 'image';
+
+                // Atualiza somente a área de preview.
+                // A Galeria e o Avançar permanecem no topo.
+
+                previewContainer.innerHTML = '';
+
+                let mediaElement;
+
+                if (mediaType === 'video') {
+
+                    mediaElement = document.createElement('video');
+
+                    mediaElement.src = mediaDataUrl;
+                    mediaElement.controls = true;
+                    mediaElement.autoplay = true;
+                    mediaElement.playsInline = true;
+
+                } else {
+
+                    mediaElement = document.createElement('img');
+
+                    mediaElement.src = mediaDataUrl;
+                    mediaElement.alt = 'Prévia da publicação';
+
+                }
+
+                previewContainer.appendChild(mediaElement);
+
+                modalThumbnail.src = mediaDataUrl;
+
+                btnAdvance.classList.add('active');
+                btnAdvance.disabled = false;
+
+                fileInput.value = '';
+            };
+
+            reader.onerror = function() {
+                alert('Erro ao carregar o arquivo.');
+                fileInput.value = '';
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        // AVANÇAR
+        btnAdvance.addEventListener('click', () => {
+
+            if (!mediaDataUrl) return;
