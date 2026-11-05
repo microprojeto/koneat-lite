@@ -1,4 +1,9 @@
-// ===== KONEAT - FINAL DEFINITIVO - TODAS AS FUNÇÕES (PARTE 1) =====
+// ===== KONEAT - FINAL DEFINITIVO - TODAS AS FUNÇÕES =====
+
+// 1. CONFIGURAÇÃO COM AS NOVAS CHAVES DO SUPABASE
+const SUPABASE_URL = 'https://aerhvhowzteqezqvhtmg.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_N0XY12nN2CAdEmI4FCGSaA__y0NNKkO';
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Garante o comportamento de app nativo e tela cheia em qualquer tela automaticamente
 (function enforceMobileViewport() {
@@ -79,8 +84,6 @@ function postarPlus(tipoPlus,midia,formato){
   location.href='passo1.html';
 }
 
-
-
 // --- 1ª NAV PERFIL ---
 function renderPerfil(){
   posts=JSON.parse(localStorage.getItem('koneat_posts')||'[]');
@@ -88,8 +91,6 @@ function renderPerfil(){
     <div class="item-perfil"><div onclick="abrir('${p.id}')">${p.midia.includes('mp4')?`<video poster="${p.capa}" src="${p.midia}"></video>`:`<img src="${p.midia}">`}</div><button onclick="deletar('${p.id}')">🗑️</button></div>
   `).join('');
 }
-
-// ===== KONEAT - FINAL DEFINITIVO - TODAS AS FUNÇÕES (PARTE 2) =====
 
 // --- 2ª NAV VIRAL - FUNDO PRETO 390x844 / 1080x1920 - COVER 9:16 SEMPRE ---
 function renderViral(){
@@ -168,4 +169,4 @@ window.addEventListener('scroll',()=>{
 });
 
 const SVG={curtir:'<svg>...</svg>',curtirH:'<svg>...</svg>',comentar:'<svg>...</svg>',comentarH:'<svg>...</svg>',repostar:'<svg>...</svg>',repostarH:'<svg>...</svg>',marcar:'<svg>...</svg>',marcarH:'<svg>...</svg>',encaminhar:'<svg>...</svg>',encaminharH:'<svg>...</svg>'};
-
+        
