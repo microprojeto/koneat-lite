@@ -74,21 +74,21 @@
             <div class="input-group">
                 <label class="input-label">Nome de usuário</label>
                 <div class="input-wrapper">
-                    <input type="text" id="usernameField" class="input-field" placeholder="Digite seu @usuario" required>
+                    <input type="text" id="usernameField" class="input-field" placeholder="Digite seu @usuario" required autocomplete="username">
                 </div>
             </div>
 
             <div class="input-group">
                 <label class="input-label">E-mail</label>
                 <div class="input-wrapper">
-                    <input type="email" id="emailField" class="input-field" placeholder="Digite seu e-mail" required>
+                    <input type="email" id="emailField" class="input-field" placeholder="Digite seu e-mail" required autocomplete="email">
                 </div>
             </div>
 
             <div class="input-group">
                 <label class="input-label">Senha</label>
                 <div class="input-wrapper">
-                    <input type="password" id="passwordField" class="input-field" placeholder="Digite sua senha" required>
+                    <input type="password" id="passwordField" class="input-field" placeholder="Digite sua senha" required autocomplete="new-password">
                     <button type="button" class="toggle-password" id="togglePassBtn" aria-label="Alternar senha">
                         <svg id="eyeIcon" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zm0 12.5c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
@@ -124,18 +124,40 @@
     </div>
 
     <script>
-        // 1. CHAVES REAIS DO SUPABASE
+        /* ===============================================================
+           1. CLIENTE SUPABASE
+           =============================================================== */
         const SUPABASE_URL = 'https://aerhvhowzteqezqvhtmg.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_N0XY12nN2CAdEmI4FCGSaA__y0NNKkO';
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+            auth: {
+                persistSession: true,
+                autoRefreshToken: true,
+                detectSessionInUrl: true
+            }
+        });
+
+        const PAGINA_PERFIL = new URL('perfil.html', window.location.href).href;
+
+        /* ===============================================================
+           2. ELEMENTOS
+           =============================================================== */
+        const step1Form = document.getElementById('step1Form');
+        const step2Form = document.getElementById('step2Form');
+        const stepSubtitle = document.getElementById('stepSubtitle');
         const usernameField = document.getElementById('usernameField');
         const emailField = document.getElementById('emailField');
         const passwordField = document.getElementById('passwordField');
         const togglePassBtn = document.getElementById('togglePassBtn');
         const eyeIcon = document.getElementById('eyeIcon');
+        const btnGoToStep2 = document.getElementById('btnGoToStep2');
+        const btnVerifyCode = document.getElementById('btnVerifyCode');
+        const otpInputs = Array.from(document.querySelectorAll('.otp-input'));
 
-        // ALTERNÂNCIA DO OLHO DO INSTAGRAM
+        /* ===============================================================
+           3. ALTERNÂNCIA DO OLHO DO INSTAGRAM
+           =============================================================== */
         const openEyeSVG = `<path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zm0 12.5c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>`;
         const closedEyeSVG = `<path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.44-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2z"/>`;
 
@@ -150,16 +172,85 @@
             e.target.value = e.target.value.toLowerCase().replace(/[^a-z0-9._]/g, '');
         });
 
-        // ENVIAR CÓDIGO DE 6 DÍGITOS (ETAPA 1 -> ETAPA 2)
-        document.getElementById('btnGoToStep2').addEventListener('click', async () => {
-            const username = usernameField.value.trim();
+        /* ===============================================================
+           4. NAVEGAÇÃO ENTRE ETAPAS
+           =============================================================== */
+        function irParaCodigo() {
+            step1Form.style.display = 'none';
+            step2Form.style.display = 'block';
+            stepSubtitle.innerText = 'CONFIRMAÇÃO';
+            otpInputs[0].focus();
+        }
+
+        function limparCodigo() {
+            otpInputs.forEach(input => { input.value = ''; });
+            otpInputs[0].focus();
+        }
+
+        function lerCodigo() {
+            return otpInputs.map(input => input.value).join('');
+        }
+
+        /* ===============================================================
+           5. CAIXAS DO CÓDIGO: SÓ NÚMEROS, COLAR, BACKSPACE E ENTER
+           =============================================================== */
+        otpInputs.forEach((input, index) => {
+            input.setAttribute('inputmode', 'numeric');
+            input.setAttribute('pattern', '[0-9]*');
+            input.setAttribute('autocomplete', index === 0 ? 'one-time-code' : 'off');
+
+            input.addEventListener('input', () => {
+                input.value = input.value.replace(/\D/g, '').slice(-1);
+                if (input.value && index < otpInputs.length - 1) {
+                    otpInputs[index + 1].focus();
+                }
+            });
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !input.value && index > 0) {
+                    otpInputs[index - 1].focus();
+                    otpInputs[index - 1].value = '';
+                }
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    btnVerifyCode.click();
+                }
+            });
+
+            input.addEventListener('paste', (e) => {
+                const texto = (e.clipboardData || window.clipboardData).getData('text') || '';
+                const digitos = texto.replace(/\D/g, '').slice(0, 6);
+                if (!digitos) return;
+                e.preventDefault();
+                digitos.split('').forEach((digito, i) => {
+                    if (otpInputs[i]) otpInputs[i].value = digito;
+                });
+                otpInputs[Math.min(digitos.length, otpInputs.length - 1)].focus();
+            });
+        });
+
+        /* ===============================================================
+           6. ETAPA 1 -> ENVIA O CÓDIGO DE 6 DÍGITOS
+           =============================================================== */
+        btnGoToStep2.addEventListener('click', async () => {
+            const username = usernameField.value.trim().replace(/^@/, '');
             const email = emailField.value.trim().toLowerCase();
             const password = passwordField.value;
 
-            if(!username || !email || !password) {
-                alert('Preencha todos os campos!');
+            if (!username) {
+                alert('Digite seu nome de usuário.');
                 return;
             }
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                alert('Digite um e-mail válido.');
+                return;
+            }
+            if (password.length < 6) {
+                alert('A senha precisa ter no mínimo 6 caracteres.');
+                return;
+            }
+
+            btnGoToStep2.disabled = true;
 
             const { data, error } = await supabaseClient.auth.signUp({
                 email: email,
@@ -169,44 +260,90 @@
                 }
             });
 
+            btnGoToStep2.disabled = false;
+
             if (error) {
                 alert('Erro ao cadastrar: ' + error.message);
-            } else {
-                document.getElementById('step1Form').style.display = 'none';
-                document.getElementById('step2Form').style.display = 'block';
-                document.getElementById('stepSubtitle').innerText = 'CONFIRMAÇÃO';
+                return;
             }
+
+            // E-mail já registado: o Supabase devolve user com identities vazio
+            if (data && data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
+                alert('Este e-mail já está cadastrado. Faça login ou recupere o acesso.');
+                return;
+            }
+
+            // Confirmação de e-mail desativada no painel: já existe sessão
+            if (data && data.session) {
+                window.location.replace(PAGINA_PERFIL);
+                return;
+            }
+
+            usernameField.value = username;
+            irParaCodigo();
+            alert('Enviamos um código de 6 dígitos para ' + email + '.');
         });
 
-        // FOCO AUTOMÁTICO DAS CAIXAS DO CÓDIGO
-        const otpInputs = document.querySelectorAll('.otp-input');
-        otpInputs.forEach((input, index) => {
-            input.addEventListener('input', () => {
-                if (input.value && index < otpInputs.length - 1) otpInputs[index + 1].focus();
-            });
-        });
+        /* ===============================================================
+           7. ETAPA 2 -> VALIDA O CÓDIGO E ENTRA
+           =============================================================== */
+        btnVerifyCode.addEventListener('click', async () => {
+            const token = lerCodigo();
+            const email = emailField.value.trim().toLowerCase();
 
-        // VALIDAR O CÓDIGO E REDIRECIONAR PARA O PERFIL
-        document.getElementById('btnVerifyCode').addEventListener('click', async () => {
-            let token = "";
-            otpInputs.forEach(input => token += input.value);
-
-            if (token.length < 6) {
+            if (token.length !== 6) {
                 alert('Digite os 6 dígitos do código!');
                 return;
             }
 
-            const email = emailField.value.trim().toLowerCase();
+            btnVerifyCode.disabled = true;
+
             const { data, error } = await supabaseClient.auth.verifyOtp({
                 email: email,
                 token: token,
                 type: 'signup'
             });
 
-            if (error) {
-                alert('Código inválido ou expirado!');
-            } else {
-                window.location.href = 'perfil.html';
+            btnVerifyCode.disabled = false;
+
+            if (!error) {
+                window.location.replace(PAGINA_PERFIL);
+                return;
+            }
+
+            // Código expirado: pedimos um novo automaticamente
+            if (error.code === 'otp_expired' || /expired/i.test(error.message)) {
+                await supabaseClient.auth.resend({ type: 'signup', email: email });
+                limparCodigo();
+                alert('O código expirou. Enviamos um novo código para o seu e-mail.');
+                return;
+            }
+
+            limparCodigo();
+            alert('Código inválido. Confira os 6 dígitos e tente novamente.');
+        });
+
+        /* ===============================================================
+           8. AO ABRIR: PREFILL DE E-MAIL VINDO DO LOGIN
+           (index.html redireciona para cá quando o e-mail não está confirmado)
+           =============================================================== */
+        window.addEventListener('DOMContentLoaded', async () => {
+            const params = new URLSearchParams(window.location.search);
+            const emailParam = params.get('email');
+
+            if (emailParam) {
+                emailField.value = emailParam.toLowerCase();
+            }
+
+            if (params.get('verificar') === '1' && emailParam) {
+                irParaCodigo();
+                alert('Confirme o seu e-mail. Enviamos um novo código de 6 dígitos.');
+                return;
+            }
+
+            const { data } = await supabaseClient.auth.getSession();
+            if (data && data.session) {
+                window.location.replace(PAGINA_PERFIL);
             }
         });
     </script>
