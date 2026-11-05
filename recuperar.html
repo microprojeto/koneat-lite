@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Koneat Lite - Cadastro</title>
+    <title>Koneat Lite - Recuperar acesso</title>
     <!-- Supabase JS Client SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
@@ -66,38 +66,19 @@
     <div class="app-screen">
         <div class="logo-area">
             <h1 class="logo-title">KONEAT LITE</h1>
-            <div class="logo-subtitle" id="stepSubtitle">CRIE SUA CONTA</div>
+            <div class="logo-subtitle" id="stepSubtitle">RECUPERAR ACESSO</div>
         </div>
 
-        <!-- ETAPA 1: PREENCHER DADOS -->
+        <!-- ETAPA 1: INFORMAR O E-MAIL -->
         <div id="step1Form" style="width: 100%;">
             <div class="input-group">
-                <label class="input-label">Nome de usuário</label>
+                <label class="input-label">E-mail da conta</label>
                 <div class="input-wrapper">
-                    <input type="text" id="usernameField" class="input-field" placeholder="Digite seu @usuario" required>
+                    <input type="email" id="emailField" class="input-field" placeholder="Digite seu e-mail" required autocomplete="email">
                 </div>
             </div>
 
-            <div class="input-group">
-                <label class="input-label">E-mail</label>
-                <div class="input-wrapper">
-                    <input type="email" id="emailField" class="input-field" placeholder="Digite seu e-mail" required>
-                </div>
-            </div>
-
-            <div class="input-group">
-                <label class="input-label">Senha</label>
-                <div class="input-wrapper">
-                    <input type="password" id="passwordField" class="input-field" placeholder="Digite sua senha" required>
-                    <button type="button" class="toggle-password" id="togglePassBtn" aria-label="Alternar senha">
-                        <svg id="eyeIcon" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zm0 12.5c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-
-            <button type="button" class="btn-submit" id="btnGoToStep2">CONTINUAR</button>
+            <button type="button" class="btn-submit" id="btnGoToStep2">ENVIAR CÓDIGO</button>
         </div>
 
         <!-- ETAPA 2: VALIDAR CÓDIGO DE 6 DÍGITOS (ESCONDIDO INICIALMENTE) -->
@@ -115,27 +96,65 @@
                 <input type="text" maxlength="1" class="otp-input">
             </div>
 
-            <button type="button" class="btn-submit" id="btnVerifyCode">CONFIRMAR E ENTRAR</button>
+            <button type="button" class="btn-submit" id="btnVerifyCode">VALIDAR CÓDIGO</button>
+        </div>
+
+        <!-- ETAPA 3: DEFINIR A NOVA SENHA (ESCONDIDO INICIALMENTE) -->
+        <div id="step3Form" style="width: 100%; display: none;">
+            <div class="input-group">
+                <label class="input-label">Nova senha</label>
+                <div class="input-wrapper">
+                    <input type="password" id="passwordField" class="input-field" placeholder="Digite a nova senha" required autocomplete="new-password">
+                    <button type="button" class="toggle-password" id="togglePassBtn" aria-label="Alternar senha">
+                        <svg id="eyeIcon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zm0 12.5c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <button type="button" class="btn-submit" id="btnSavePassword">SALVAR NOVA SENHA</button>
         </div>
 
         <div>
-            <a class="footer-link" onclick="window.location.href='index.html'">Já tem conta? Voltar ao Login</a>
+            <a class="footer-link" onclick="window.location.href='index.html'">Voltar ao Login</a>
         </div>
     </div>
 
     <script>
-        // 1. CHAVES REAIS DO SUPABASE
+        /* ===============================================================
+           1. CLIENTE SUPABASE
+           =============================================================== */
         const SUPABASE_URL = 'https://aerhvhowzteqezqvhtmg.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_N0XY12nN2CAdEmI4FCGSaA__y0NNKkO';
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        const usernameField = document.getElementById('usernameField');
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+            auth: {
+                persistSession: true,
+                autoRefreshToken: true,
+                detectSessionInUrl: true
+            }
+        });
+
+        /* ===============================================================
+           2. ELEMENTOS
+           =============================================================== */
+        const step1Form = document.getElementById('step1Form');
+        const step2Form = document.getElementById('step2Form');
+        const step3Form = document.getElementById('step3Form');
+        const stepSubtitle = document.getElementById('stepSubtitle');
         const emailField = document.getElementById('emailField');
         const passwordField = document.getElementById('passwordField');
         const togglePassBtn = document.getElementById('togglePassBtn');
         const eyeIcon = document.getElementById('eyeIcon');
+        const btnGoToStep2 = document.getElementById('btnGoToStep2');
+        const btnVerifyCode = document.getElementById('btnVerifyCode');
+        const btnSavePassword = document.getElementById('btnSavePassword');
+        const otpInputs = Array.from(document.querySelectorAll('.otp-input'));
 
-        // ALTERNÂNCIA DO OLHO DO INSTAGRAM
+        /* ===============================================================
+           3. ALTERNÂNCIA DO OLHO DO INSTAGRAM
+           =============================================================== */
         const openEyeSVG = `<path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zm0 12.5c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>`;
         const closedEyeSVG = `<path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.44-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2z"/>`;
 
@@ -145,70 +164,173 @@
             eyeIcon.innerHTML = isPassword ? closedEyeSVG : openEyeSVG;
         });
 
-        // CONVERTE USERNAME PARA MINÚSCULAS AUTOMATICAMENTE
-        usernameField.addEventListener('input', (e) => {
-            e.target.value = e.target.value.toLowerCase().replace(/[^a-z0-9._]/g, '');
-        });
+        /* ===============================================================
+           4. NAVEGAÇÃO ENTRE ETAPAS
+           =============================================================== */
+        function irParaCodigo() {
+            step1Form.style.display = 'none';
+            step3Form.style.display = 'none';
+            step2Form.style.display = 'block';
+            stepSubtitle.innerText = 'CONFIRMAÇÃO';
+            otpInputs[0].focus();
+        }
 
-        // ENVIAR CÓDIGO DE 6 DÍGITOS (ETAPA 1 -> ETAPA 2)
-        document.getElementById('btnGoToStep2').addEventListener('click', async () => {
-            const username = usernameField.value.trim();
-            const email = emailField.value.trim().toLowerCase();
-            const password = passwordField.value;
+        function irParaNovaSenha() {
+            step1Form.style.display = 'none';
+            step2Form.style.display = 'none';
+            step3Form.style.display = 'block';
+            stepSubtitle.innerText = 'NOVA SENHA';
+            passwordField.focus();
+        }
 
-            if(!username || !email || !password) {
-                alert('Preencha todos os campos!');
-                return;
-            }
+        function limparCodigo() {
+            otpInputs.forEach(input => { input.value = ''; });
+            otpInputs[0].focus();
+        }
 
-            const { data, error } = await supabaseClient.auth.signUp({
-                email: email,
-                password: password,
-                options: {
-                    data: { username_handle: username }
+        function lerCodigo() {
+            return otpInputs.map(input => input.value).join('');
+        }
+
+        /* ===============================================================
+           5. CAIXAS DO CÓDIGO: SÓ NÚMEROS, COLAR, BACKSPACE E ENTER
+           =============================================================== */
+        otpInputs.forEach((input, index) => {
+            input.setAttribute('inputmode', 'numeric');
+            input.setAttribute('pattern', '[0-9]*');
+            input.setAttribute('autocomplete', index === 0 ? 'one-time-code' : 'off');
+
+            input.addEventListener('input', () => {
+                input.value = input.value.replace(/\D/g, '').slice(-1);
+                if (input.value && index < otpInputs.length - 1) {
+                    otpInputs[index + 1].focus();
                 }
             });
 
-            if (error) {
-                alert('Erro ao cadastrar: ' + error.message);
-            } else {
-                document.getElementById('step1Form').style.display = 'none';
-                document.getElementById('step2Form').style.display = 'block';
-                document.getElementById('stepSubtitle').innerText = 'CONFIRMAÇÃO';
-            }
-        });
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !input.value && index > 0) {
+                    otpInputs[index - 1].focus();
+                    otpInputs[index - 1].value = '';
+                }
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    btnVerifyCode.click();
+                }
+            });
 
-        // FOCO AUTOMÁTICO DAS CAIXAS DO CÓDIGO
-        const otpInputs = document.querySelectorAll('.otp-input');
-        otpInputs.forEach((input, index) => {
-            input.addEventListener('input', () => {
-                if (input.value && index < otpInputs.length - 1) otpInputs[index + 1].focus();
+            input.addEventListener('paste', (e) => {
+                const texto = (e.clipboardData || window.clipboardData).getData('text') || '';
+                const digitos = texto.replace(/\D/g, '').slice(0, 6);
+                if (!digitos) return;
+                e.preventDefault();
+                digitos.split('').forEach((digito, i) => {
+                    if (otpInputs[i]) otpInputs[i].value = digito;
+                });
+                otpInputs[Math.min(digitos.length, otpInputs.length - 1)].focus();
             });
         });
 
-        // VALIDAR O CÓDIGO E REDIRECIONAR PARA O PERFIL
-        document.getElementById('btnVerifyCode').addEventListener('click', async () => {
-            let token = "";
-            otpInputs.forEach(input => token += input.value);
+        /* ===============================================================
+           6. ETAPA 1 -> PEDE O CÓDIGO DE RECUPERAÇÃO
+           =============================================================== */
+        btnGoToStep2.addEventListener('click', async () => {
+            const email = emailField.value.trim().toLowerCase();
 
-            if (token.length < 6) {
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                alert('Digite um e-mail válido.');
+                return;
+            }
+
+            btnGoToStep2.disabled = true;
+
+            const { error } = await supabaseClient.auth.resetPasswordForEmail(email);
+
+            btnGoToStep2.disabled = false;
+
+            if (error) {
+                alert('Erro ao enviar o código: ' + error.message);
+                return;
+            }
+
+            irParaCodigo();
+            alert('Se existir uma conta com este e-mail, enviamos um código de 6 dígitos.');
+        });
+
+        /* ===============================================================
+           7. ETAPA 2 -> VALIDA O CÓDIGO (CRIA A SESSÃO DE RECUPERAÇÃO)
+           =============================================================== */
+        btnVerifyCode.addEventListener('click', async () => {
+            const token = lerCodigo();
+            const email = emailField.value.trim().toLowerCase();
+
+            if (token.length !== 6) {
                 alert('Digite os 6 dígitos do código!');
                 return;
             }
 
-            const email = emailField.value.trim().toLowerCase();
+            btnVerifyCode.disabled = true;
+
             const { data, error } = await supabaseClient.auth.verifyOtp({
                 email: email,
                 token: token,
-                type: 'signup'
+                type: 'recovery'
             });
 
-            if (error) {
-                alert('Código inválido ou expirado!');
-            } else {
-                window.location.href = 'perfil.html';
+            btnVerifyCode.disabled = false;
+
+            if (!error) {
+                limparCodigo();
+                irParaNovaSenha();
+                return;
             }
+
+            // Código expirado: pedimos um novo
+            if (error.code === 'otp_expired' || /expired/i.test(error.message)) {
+                await supabaseClient.auth.resetPasswordForEmail(email);
+                limparCodigo();
+                alert('O código expirou. Enviamos um novo código para o seu e-mail.');
+                return;
+            }
+
+            limparCodigo();
+            alert('Código inválido. Confira os 6 dígitos e tente novamente.');
+        });
+
+        /* ===============================================================
+           8. ETAPA 3 -> GRAVA A NOVA SENHA
+           =============================================================== */
+        btnSavePassword.addEventListener('click', async () => {
+            const novaSenha = passwordField.value;
+
+            if (novaSenha.length < 6) {
+                alert('A nova senha precisa ter no mínimo 6 caracteres.');
+                return;
+            }
+
+            // Garante que a sessão de recuperação ainda está ativa
+            const { data: sessao } = await supabaseClient.auth.getSession();
+            if (!sessao || !sessao.session) {
+                alert('A sua sessão de recuperação expirou. Comece de novo.');
+                window.location.href = 'recuperar.html';
+                return;
+            }
+
+            btnSavePassword.disabled = true;
+
+            const { error } = await supabaseClient.auth.updateUser({ password: novaSenha });
+
+            btnSavePassword.disabled = false;
+
+            if (error) {
+                alert('Não foi possível salvar a nova senha: ' + error.message);
+                return;
+            }
+
+            await supabaseClient.auth.signOut();
+            alert('Senha atualizada com sucesso! Entre com a sua nova senha.');
+            window.location.href = 'index.html';
         });
     </script>
 </body>
-</html>
+    </html>
+    
