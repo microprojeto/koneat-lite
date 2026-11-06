@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#000000">
     <title>Koneat - Criar publicação</title>
 
@@ -241,14 +241,15 @@
             height: 22px;
         }
 
-        /* ESTILO DO ITEM ATIVO (QUADRADINHO BRANCO COM ÍCONE PRETO) */
+        /* ESTILO DO ITEM ATIVO: QUADRADINHO OCO BRANCO COM SÍMBOLO BRANCO (IGUAL À REFERÊNCIA) */
         .nav-link.active .nav-box-bg {
-            fill: #ffffff;
+            stroke: #ffffff;
+            fill: none;
         }
 
         .nav-link.active .nav-icon-inner {
-            stroke: #121214;
-            fill: #121214;
+            stroke: #ffffff;
+            fill: #ffffff;
         }
     </style>
 </head>
@@ -329,11 +330,11 @@
             </svg>
         </a>
 
-        <!-- 2. Criar / Plus (Passo 3 - Ativo) -->
+        <!-- 2. Criar / Plus (Passo 3 - Ativo com quadradinho oco e sinal de + branco) -->
         <a href="./passo3.html" class="nav-link active" aria-label="Criar">
             <svg viewBox="0 0 24 24">
-                <rect class="nav-box-bg" x="2" y="2" width="20" height="20" rx="5" fill="none"></rect>
-                <path class="nav-icon-inner" d="M12 7v10M7 12h10" stroke="#8e8e93" stroke-width="2.5" stroke-linecap="round"/>
+                <rect class="nav-box-bg" x="2" y="2" width="20" height="20" rx="5" stroke="#ffffff" stroke-width="2" fill="none"></rect>
+                <path class="nav-icon-inner" d="M12 7v10M7 12h10" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
             </svg>
         </a>
 
@@ -423,5 +424,5 @@
         });
     </script>
 </body>
-</html>
-
+                    </html>
+                    
