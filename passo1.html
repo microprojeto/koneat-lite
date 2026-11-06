@@ -66,10 +66,10 @@
             padding: 0;
         }
 
-        /* BALÃOZINHO DE MENSAGENS COM A PONTINHA ORGÂNICA REAL */
+        /* BALÃOZINHO DE MENSAGENS COM A PONTINHA ORGÂNICA EXATA DA REFERÊNCIA */
         .chat-bubble-icon {
-            width: 22px;
-            height: 22px;
+            width: 24px;
+            height: 24px;
             background: #8e8e93;
             border-radius: 50%;
             display: flex;
@@ -81,12 +81,13 @@
         .chat-bubble-icon::after {
             content: "";
             position: absolute;
-            bottom: -2px;
-            right: 0px;
-            width: 6px;
-            height: 6px;
+            bottom: -1px;
+            right: 2px;
+            width: 5px;
+            height: 5px;
             background: #8e8e93;
-            clip-path: polygon(0 0, 100% 0, 100% 100%);
+            border-bottom-right-radius: 3px;
+            transform: rotate(15deg);
         }
 
         .chat-dots {
@@ -214,7 +215,7 @@
             margin-top: 2px;
         }
 
-        /* Bloco de Informações Dinâmicas */
+        /* Informações Dinâmicas */
         .user-details-block {
             padding: 8px 16px 0 16px;
         }
@@ -239,7 +240,7 @@
             color: #262626;
         }
 
-        /* Botões de Ação do Perfil (Cards Cinza Quadradinhos) */
+        /* Botões de Ação do Perfil */
         .action-buttons {
             display: flex;
             gap: 8px;
@@ -262,7 +263,7 @@
             cursor: pointer;
         }
 
-        /* TABS COM INDICADOR FLUIDO QUE DESLIZA ENTRE ELAS */
+        /* TABS DE CONTEÚDO COM A SETINHA DESLIZANDO CORRETAMENTE */
         .content-tabs-wrapper {
             position: relative;
             border-top: 1px solid #f0f0f0;
@@ -272,6 +273,7 @@
         .content-tabs {
             display: flex;
             position: relative;
+            width: 100%;
         }
 
         .tab-btn {
@@ -420,7 +422,7 @@
             stroke: #8e8e93;
         }
 
-        /* PERFIL ATIVO: CÍRCULO OCO BRANCO POR FORA, FUNDO TRANSPARENTE E ÍCONE CINZA DENTRO */
+        /* PERFIL ATIVO */
         .profile-active-circle {
             width: 30px;
             height: 30px;
@@ -447,7 +449,7 @@
                 koneat_user
             </div>
             <div class="header-actions">
-                <!-- Balãozinho de Mensagens Compacto com Pontinha Orgânica -->
+                <!-- Balãozinho de Mensagens com pontinha orgânica perfeita -->
                 <button class="icon-btn" aria-label="Mensagens">
                     <div class="chat-bubble-icon">
                         <div class="chat-dots">
@@ -524,7 +526,7 @@
             <button class="btn-secondary">Compartilhar perfil</button>
         </section>
 
-        <!-- TABS DE CONTEÚDO COM SETINHA QUE DESLIZA ENTRE ELAS -->
+        <!-- TABS DE CONTEÚDO COM A SETINHA FUNCIONANDO PERFEITAMENTE -->
         <div class="content-tabs-wrapper">
             <nav class="content-tabs" id="tabsContainer">
                 <button class="tab-btn active" data-index="0">
@@ -576,8 +578,12 @@
             </svg>
         </a>
 
-        <!-- 2. Criar / Plus (Com gradinha oca e sinal de + cinza padrão) -->
+        <!-- 2. Criar / Plus -->
         <a href="./passo3.html" class="nav-link" aria-label="Criar">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
                 <rect x="2" y="2" width="20" height="20" rx="5" stroke="#8e8e93" stroke-width="1.8" fill="none"></rect>
-                <path d="M12 7v10M7 12h10" stroke="#8e8e93" stroke-width="1.8" stroke-linecap="r
+                <path d="M12 7v10M7 12h10" stroke="#8e8e93" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+        </a>
+
+        <!-- 3. Vídeos Virais --
