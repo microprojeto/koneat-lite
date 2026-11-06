@@ -26,14 +26,14 @@
             position: relative;
         }
 
-        /* DETALHES DE LINHAS BRANCAS LUMINOSAS NOS CANTOS (MENOS DESTACADAS) */
+        /* DETALHES DE LINHAS BRANCAS LUMINOSAS NOS CANTOS (IGUAL À REFERÊNCIA) */
         body::before, body::after {
             content: "";
             position: absolute;
             width: 250px;
             height: 250px;
             pointer-events: none;
-            opacity: 0.25; /* Menos brilho e menos destacado */
+            opacity: 0.25;
         }
 
         body::before {
@@ -52,23 +52,24 @@
             box-shadow: inset 1px 1px 2px rgba(255,255,255,0.3);
         }
 
-        /* CONTAINER PRINCIPAL DO LOGIN (390x844px Max, Tela Cheia sem Scroll) */
+        /* CONTAINER PRINCIPAL DO LOGIN (390x844px Max, Centralizado e sem espaçamento exagerado) */
         .app-screen {
             width: 100%;
             max-width: 390px;
             height: 100%;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            padding: calc(env(safe-area-inset-top) + 24px) 24px calc(env(safe-area-inset-bottom) + 16px) 24px;
+            justify-content: center; /* Centraliza todo o bloco no meio da tela como na imagem */
+            align-items: center;
+            padding: 24px;
             position: relative;
             z-index: 1;
+            gap: 24px; /* Espaçamento uniforme entre o topo, formulário e rodapé */
         }
 
-        /* TOPO: LOGO E TÍTULOS */
+        /* TOPO: LOGO E TÍTULOS MAIS PRÓXIMOS DO FORMULÁRIO */
         .logo-area {
             text-align: center;
-            margin-top: 12px;
         }
 
         .logo-text {
@@ -226,13 +227,14 @@
             margin-right: 12px;
         }
 
-        /* RODAPÉ E LINKS */
+        /* RODAPÉ E LINKS LOGO ABAIXO DO GOOGLE */
         .footer-area {
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 16px;
-            margin-bottom: 4px;
+            width: 100%;
+            margin-top: 4px;
         }
 
         .footer-links {
@@ -260,6 +262,7 @@
             color: #8e8e93;
             letter-spacing: 0.5px;
             margin: 0;
+            padding-top: 4px;
         }
     </style>
 </head>
@@ -313,7 +316,7 @@
             </button>
         </div>
 
-        <!-- RODAPÉ -->
+        <!-- RODAPÉ E LINKS -->
         <div class="footer-area">
             <div class="footer-links">
                 <a id="btnSignUp" class="footer-link">Criar nova conta</a>
@@ -341,7 +344,7 @@
         });
 
         /* ===============================================================
-           2. EVENTOS DOS BOTÕES E LINKS (PRONTO PARA INTEGRAÇÃO)
+           2. EVENTOS DOS BOTÕES E LINKS
            =============================================================== */
         document.getElementById('loginForm').addEventListener('submit', (e) => {
             e.preventDefault();
@@ -353,12 +356,10 @@
                 return;
             }
             
-            // Simulação de redirecionamento para o perfil (o Lovable/Base44 fará a integração com Supabase depois)
             window.location.href = 'passo1.html';
         });
 
         document.getElementById('btnGoogle').addEventListener('click', () => {
-            // Placeholder para o fluxo de OAuth do Google
             window.location.href = 'passo1.html';
         });
 
@@ -371,5 +372,5 @@
         });
     </script>
 </body>
-    </html>
-                    
+                                    </html>
+            
