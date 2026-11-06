@@ -1,10 +1,5 @@
 // ===== KONEAT - FINAL DEFINITIVO - TODAS AS FUNÇÕES =====
 
-// 1. CONFIGURAÇÃO COM AS NOVAS CHAVES DO SUPABASE
-const SUPABASE_URL = 'https://aerhvhowzteqezqvhtmg.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_N0XY12nN2CAdEmI4FCGSaA__y0NNKkO';
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
 // Garante o comportamento de app nativo e tela cheia em qualquer tela automaticamente
 (function enforceMobileViewport() {
     let meta = document.querySelector('meta[name="viewport"]');
@@ -169,4 +164,3 @@ window.addEventListener('scroll',()=>{
 });
 
 const SVG={curtir:'<svg>...</svg>',curtirH:'<svg>...</svg>',comentar:'<svg>...</svg>',comentarH:'<svg>...</svg>',repostar:'<svg>...</svg>',repostarH:'<svg>...</svg>',marcar:'<svg>...</svg>',marcarH:'<svg>...</svg>',encaminhar:'<svg>...</svg>',encaminharH:'<svg>...</svg>'};
-        
