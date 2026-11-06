@@ -4,19 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Koneat - Perfil</title>
+    <link rel="stylesheet" href="css/style.css">
     <style>
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
+        /* Correção para evitar corte horizontal na tela */
         html, body {
             margin: 0;
             padding: 0;
             width: 100%;
             overflow-x: hidden;
-            background-color: #000000;
-            color: #ffffff;
+            background-color: #ffffff;
+            color: #262626;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
@@ -30,13 +27,14 @@
             position: relative;
         }
 
-        /* TOPO DO PERFIL ESTILO INSTAGRAM */
+        /* Topo Header Estilo Instagram */
         .profile-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 16px;
             height: 56px;
+            background: #ffffff;
         }
 
         .header-logo {
@@ -44,6 +42,7 @@
             font-weight: 700;
             letter-spacing: -0.5px;
             text-transform: lowercase;
+            color: #000000;
         }
 
         .header-actions {
@@ -56,18 +55,18 @@
             background: none;
             border: none;
             cursor: pointer;
-            color: #ffffff;
+            color: #262626;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 0;
         }
 
-        /* BALÃOZINHO DE MENSAGENS REDONDO COM 3 PONTINHOS EM PÉ E RABINHO */
+        /* Balãozinho de Mensagens Cinza com Rabinho */
         .chat-bubble-icon {
             width: 32px;
             height: 32px;
-            background: #262626;
+            background: #a8a8a8;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -82,7 +81,7 @@
             left: 6px;
             width: 6px;
             height: 6px;
-            background: #262626;
+            background: #a8a8a8;
             transform: rotate(45deg);
             border-bottom-right-radius: 2px;
         }
@@ -102,7 +101,7 @@
             border-radius: 50%;
         }
 
-        /* MENU DROPDOWN ESTILO FLUTUANTE BRANCO COM ÍCONES */
+        /* Menu Dropdown / Folhinha dos 3 pontinhos */
         .dropdown-wrapper {
             position: relative;
         }
@@ -116,7 +115,8 @@
             color: #000000;
             border-radius: 16px;
             width: 190px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border: 1px solid rgba(0,0,0,0.08);
             z-index: 1000;
             overflow: hidden;
             padding: 6px 0;
@@ -148,7 +148,7 @@
             stroke: #262626;
         }
 
-        /* BLOCO SUPERIOR: AVATAR + MÉTRICAS */
+        /* Bloco Superior: Avatar + Métricas */
         .profile-top-layout {
             display: flex;
             align-items: center;
@@ -167,11 +167,11 @@
             width: 82px;
             height: 82px;
             border-radius: 50%;
-            background: #1c1c1e;
+            background: #e2f0fd;
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(0, 0, 0, 0.08);
         }
 
         .camera-btn {
@@ -180,8 +180,8 @@
             right: 0;
             width: 26px;
             height: 26px;
-            background: #0095f6;
-            border: 2px solid #000000;
+            background: #000000;
+            border: 2px solid #ffffff;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -204,15 +204,16 @@
         .stat-number {
             font-size: 16px;
             font-weight: 700;
+            color: #000000;
         }
 
         .stat-label {
             font-size: 12px;
-            color: #8e8e93;
+            color: #262626;
             margin-top: 2px;
         }
 
-        /* INFORMAÇÕES DINÂMICAS */
+        /* Bloco de Informações Dinâmicas */
         .user-details-block {
             padding: 12px 16px 0 16px;
         }
@@ -221,11 +222,12 @@
             font-size: 14px;
             font-weight: 600;
             margin: 0;
+            color: #000000;
         }
 
         .user-tag {
             font-size: 13px;
-            color: #8e8e93;
+            color: #737373;
             margin: 2px 0 0 0;
         }
 
@@ -233,22 +235,23 @@
             font-size: 13px;
             margin: 6px 0 0 0;
             white-space: pre-wrap;
+            color: #262626;
         }
 
-        /* BOTÕES DE AÇÃO */
+        /* Botões de Ação do Perfil (Cards Cinza Quadradinhos Igual Instagram)[span_2](start_span)[span_2](end_span) */
         .action-buttons {
             display: flex;
             gap: 8px;
             padding: 14px 16px 0 16px;
         }
 
-        .btn-action-profile {
+        .btn-secondary {
             flex: 1;
             height: 34px;
-            background: #262626;
+            background: #efefef;
             border: none;
             border-radius: 8px;
-            color: #ffffff;
+            color: #000000;
             font-size: 13px;
             font-weight: 600;
             display: flex;
@@ -259,14 +262,14 @@
             transition: background 0.2s;
         }
 
-        .btn-action-profile:hover {
-            background: #363636;
+        .btn-secondary:hover {
+            background: #dbdbdb;
         }
 
-        /* TABS DE CONTEÚDO */
+        /* Tabs de Conteúdo */
         .content-tabs {
             display: flex;
-            border-top: 1px solid #262626;
+            border-top: 1px solid #dbdbdb;
             margin-top: 16px;
         }
 
@@ -281,14 +284,15 @@
             justify-content: center;
             cursor: pointer;
             border-bottom: 1px solid transparent;
+            gap: 6px;
         }
 
         .tab-btn.active {
-            color: #ffffff;
-            border-bottom-color: #ffffff;
+            color: #000000;
+            border-bottom-color: #000000;
         }
 
-        /* ESTADO VAZIO DO FEED */
+        /* Área Vazia / Feed Painel */
         .feed-empty-state {
             display: flex;
             flex-direction: column;
@@ -301,7 +305,7 @@
         .empty-icon-wrapper {
             width: 64px;
             height: 64px;
-            border: 2px solid #ffffff;
+            border: 2px solid #000000;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -313,6 +317,7 @@
             font-size: 16px;
             font-weight: 600;
             margin: 0 0 16px 0;
+            color: #000000;
         }
 
         .btn-create-post {
@@ -326,11 +331,12 @@
             cursor: pointer;
         }
 
-        /* GRID DE POSTS */
+        /* Grid de Mídias Postadas no Perfil */
         .posts-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 2px;
+            padding: 2px 0 80px 0;
             width: 100%;
         }
 
@@ -338,7 +344,7 @@
             position: relative;
             width: 100%;
             aspect-ratio: 1 / 1;
-            background: #1c1c1e;
+            background: #efefef;
             overflow: hidden;
         }
 
@@ -348,7 +354,7 @@
             object-fit: cover;
         }
 
-        .badge-video {
+        .post-grid-item .badge-video {
             position: absolute;
             top: 6px;
             right: 6px;
@@ -356,8 +362,10 @@
             padding: 3px;
             border-radius: 4px;
             display: flex;
+            z-index: 2;
         }
 
+        /* Botão de Lixeira (🗑️) Discreto no Canto do Card */
         .btn-delete-post {
             position: absolute;
             top: 6px;
@@ -373,9 +381,18 @@
             justify-content: center;
             cursor: pointer;
             z-index: 10;
+            transition: background 0.2s, transform 0.15s;
         }
 
-        /* BARRA DE NAVEGAÇÃO INFERIOR FIXA */
+        .btn-delete-post:hover {
+            background: rgba(231, 76, 60, 0.9);
+        }
+
+        .btn-delete-post:active {
+            transform: scale(0.9);
+        }
+
+        /* Barra de Navegação Inferior Fixa de Ponta a Ponta */
         .bottom-nav-fixed {
             position: fixed;
             bottom: 0;
@@ -390,6 +407,7 @@
             align-items: center;
             justify-content: space-around;
             z-index: 999;
+            box-sizing: border-box;
             padding: 0 10px;
         }
 
@@ -406,28 +424,29 @@
             height: 48px;
         }
 
-        /* CÍRCULO OCO BRANCO PARA PERFIL ATIVO */
+        /* Estado do Ícone de Perfil Ativo (Círculo Oco / Borda Branca) */
         .profile-active-circle {
-            width: 30px;
-            height: 30px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             border: 2px solid #ffffff;
             display: flex;
             align-items: center;
             justify-content: center;
+            box-sizing: border-box;
         }
 
         .profile-active-circle svg {
-            stroke: #ffffff;
+            stroke: #8e8e93;
         }
     </style>
 </head>
-<body>
+<body class="light-theme">
 
-    <div class="app-container" style="padding-bottom: 80px;">
-        <!-- TOPO HEADER -->
+    <div class="app-container" style="padding-bottom: 70px;">
+        <!-- Topo Header Estilo Instagram -->
         <header class="profile-header">
-            <div class="header-logo" id="headerUsername">
+            <div class="header-logo" id="headerUsername" style="text-transform: lowercase; font-size: 20px; font-weight: 700; letter-spacing: -0.5px;">
                 koneat_user
             </div>
             <div class="header-actions">
@@ -442,7 +461,7 @@
                     </div>
                 </button>
 
-                <!-- MENU DOS TRÊS PONTINHOS -->
+                <!-- Menu dos 3 pontinhos (Folhinha) -->
                 <div class="dropdown-wrapper">
                     <button class="icon-btn" id="menuBtn" aria-label="Opções">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
@@ -465,11 +484,11 @@
             </div>
         </header>
 
-        <!-- BLOCO SUPERIOR: AVATAR + MÉTRICAS -->
+        <!-- Bloco Superior: Avatar + Métricas -->
         <section class="profile-top-layout">
             <div class="avatar-container">
                 <div class="avatar-circle">
-                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#8e8e93" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#8e8e93" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                         <circle cx="12" cy="7" r="4"></circle>
                     </svg>
@@ -495,30 +514,43 @@
             </div>
         </section>
 
-        <!-- BIO -->
+        <!-- Bloco de Informações Dinâmicas -->
         <section class="user-details-block">
             <h1 class="user-name" id="profileName">Koneat User</h1>
             <p class="user-tag" id="profileTag">@koneat_user</p>
             <p class="user-bio" id="profileBio"></p>
         </section>
 
-        <!-- BOTÕES DE AÇÃO -->
+        <!-- Botões de Ação do Perfil (Cards Cinza Quadradinhos) -->
         <section class="action-buttons">
-            <a href="./editar-perfil.html" class="btn-action-profile">Editar perfil</a>
-            <button class="btn-action-profile">Compartilhar perfil</button>
+            <a href="./editar-perfil.html" class="btn-secondary">Editar perfil</a>
+            <button class="btn-secondary">Compartilhar perfil</button>
         </section>
 
-        <!-- TABS -->
+        <!-- Tabs de Conteúdo -->
         <nav class="content-tabs">
             <button class="tab-btn active">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                <span>Todos</span>
+            </button>
+            <button class="tab-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 2l4 4-4 4"></path><path d="M3 11v-1a4 4 0 0 1 4-4h14"></path><path d="M7 22l-4-4 4-4"></path><path d="M21 13v1a4 4 0 0 1-4 4H3"></path></svg>
+                <span>Reposts</span>
+            </button>
+            <button class="tab-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="4" ry="4"></rect>
+                    <circle cx="12" cy="10" r="3"></circle>
+                    <path d="M7 18c0-2.5 2.2-4.2 5-4.2s5 1.7 5 4.2"></path>
+                </svg>
+                <span>Marcações</span>
             </button>
         </nav>
 
-        <!-- ESTADO VAZIO -->
+        <!-- Área Vazia / Feed Painel -->
         <section class="feed-empty-state" id="emptyState">
             <div class="empty-icon-wrapper">
-                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+                <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="8.5" cy="8.5" r="3"></circle>
                     <path d="M3.5 18c0-2.5 2.2-4 5-4s5 1.5 5 4"></path>
                     <circle cx="15.5" cy="8.5" r="3"></circle>
@@ -529,13 +561,14 @@
             <a href="./passo3.html" class="btn-create-post" style="text-decoration:none; display:inline-block;">Crie seu primeiro post</a>
         </section>
         
-        <!-- GRID DE POSTS -->
+        <!-- Grid das Mídias Salvas -->
         <div class="posts-grid" id="userPostsGrid" style="display: none;"></div>
+
     </div>
 
-    <!-- NAVEGAÇÃO INFERIOR -->
+    <!-- Barra de Navegação Inferior -->
     <nav class="bottom-nav-fixed">
-        <!-- 1. Home -->
+        <!-- 1. Home / Vitrine (Passo 4) -->
         <a href="./passo4.html" class="nav-link" aria-label="Home">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
@@ -543,49 +576,7 @@
             </svg>
         </a>
 
-        <!-- 2. Criar / Plus -->
+        <!-- 2. Criar / Plus (Passo 3) -->
         <a href="./passo3.html" class="nav-link" aria-label="Criar">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="2" y="2" width="20" height="20" rx="5" stroke="currentColor" stroke-width="2" fill="none"></rect>
-                <path d="M12 7v10M7 12h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-        </a>
-
-        <!-- 3. Vídeos Virais -->
-        <a href="./passo2.html" class="nav-link" aria-label="Vídeos">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="18" rx="4"></rect><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
-        </a>
-
-        <!-- 4. Perfil -->
-        <a href="./passo1.html" class="nav-link" aria-label="Perfil">
-            <div class="profile-active-circle">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="12" cy="7" r="4"></circle>
-                </svg>
-            </div>
-        </a>
-    </nav>
-
-    <script>
-        const menuBtn = document.getElementById('menuBtn');
-        const dropdownMenu = document.getElementById('dropdownMenu');
-        if (menuBtn) {
-            menuBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                dropdownMenu.classList.toggle('show');
-            });
-            window.addEventListener('click', () => {
-                dropdownMenu.classList.remove('show');
-            });
-        }
-
-        function renderUserPosts() {
-            const userPosts = JSON.parse(localStorage.getItem('koneat_user_posts') || '[]');
-            const postsGrid = document.getElementById('userPostsGrid');
-            const emptyState = document.getElementById('emptyState');
-            const postsCount = document.getElementById('postsCount');
-
-            postsCount.textContent = userPosts.length;
-
-          
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="2" width="20" height="20" rx="5" s
