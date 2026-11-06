@@ -769,3 +769,97 @@
         btnAdvance.addEventListener('click', () => {
 
             if (!mediaDataUrl) return;
+
+            captionModal.classList.add('show');
+
+        });
+
+        // VOLTAR
+        closeModalBtn.addEventListener('click', () => {
+
+            captionModal.classList.remove('show');
+
+        });
+
+        // PUBLICAR
+        publishFinalBtn.addEventListener('click', () => {
+
+            if (!mediaDataUrl) return;
+
+            loadingOverlay.classList.add('show');
+
+            const caption = postCaptionInput.value.trim();
+            const uniqueId = 'post_' + Date.now();
+
+            setTimeout(() => {
+
+                try {
+
+                    const postData = {
+                        id: uniqueId,
+                        url: mediaDataUrl,
+                        type: mediaType,
+                        author: 'Eributtler',
+                        caption: caption
+                    };
+
+                    // SALVAR NO PERFIL
+                    const userPosts = JSON.parse(
+                        localStorage.getItem('koneat_user_posts') || '[]'
+                    );
+
+                    userPosts.unshift(postData);
+
+                    localStorage.setItem(
+                        'koneat_user_posts',
+                        JSON.stringify(userPosts)
+                    );
+
+                    // SALVAR NO FEED DE VÍDEOS
+                    if (mediaType === 'video' || selectedType === 'viral') {
+
+                        const currentVirais = JSON.parse(
+                            localStorage.getItem('koneat_virais_feed') || '[]'
+                        );
+
+                        currentVirais.unshift(postData);
+
+                        localStorage.setItem(
+                            'koneat_virais_feed',
+                            JSON.stringify(currentVirais)
+                        );
+                    }
+
+                    loadingOverlay.classList.remove('show');
+
+                    // REDIRECIONAMENTO
+                    if (mediaType === 'video' || selectedType === 'viral') {
+
+                        window.location.href = './passo2.html';
+
+                    } else {
+
+                        window.location.href = './passo1.html';
+
+                    }
+
+                } catch (err) {
+
+                    console.error('Erro ao salvar:', err);
+
+                    alert(
+                        'O arquivo excede o limite de armazenamento temporário do navegador. Tente um arquivo menor.'
+                    );
+
+                    loadingOverlay.classList.remove('show');
+
+                }
+
+            }, 300);
+
+        });
+
+    </script>
+
+</body>
+</html>
