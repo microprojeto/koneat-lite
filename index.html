@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Koneat Lite - Login</title>
-    <!-- Supabase JS Client SDK -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -25,6 +23,33 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            position: relative;
+        }
+
+        /* DETALHES DE LINHAS BRANCAS LUMINOSAS NOS CANTOS (MENOS DESTACADAS) */
+        body::before, body::after {
+            content: "";
+            position: absolute;
+            width: 250px;
+            height: 250px;
+            pointer-events: none;
+            opacity: 0.25; /* Menos brilho e menos destacado */
+        }
+
+        body::before {
+            top: -100px;
+            left: -100px;
+            background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 70%);
+            border-bottom-right-radius: 100%;
+            box-shadow: inset -1px -1px 2px rgba(255,255,255,0.3);
+        }
+
+        body::after {
+            bottom: -100px;
+            right: -100px;
+            background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 70%);
+            border-top-left-radius: 100%;
+            box-shadow: inset 1px 1px 2px rgba(255,255,255,0.3);
         }
 
         /* CONTAINER PRINCIPAL DO LOGIN (390x844px Max, Tela Cheia sem Scroll) */
@@ -35,40 +60,30 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: calc(env(safe-area-inset-top) + 24px) 24px calc(env(safe-area-inset-bottom) + 24px) 24px;
+            padding: calc(env(safe-area-inset-top) + 24px) 24px calc(env(safe-area-inset-bottom) + 16px) 24px;
             position: relative;
+            z-index: 1;
         }
 
         /* TOPO: LOGO E TÍTULOS */
         .logo-area {
             text-align: center;
-            margin-top: 16px;
+            margin-top: 12px;
         }
 
         .logo-text {
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 800;
+            letter-spacing: 2px;
             margin: 0;
             line-height: 1;
         }
 
-        .brand-name {
-            font-size: 22px;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            margin: 4px 0 0 0;
-        }
-
-        .brand-name span {
-            font-weight: 300;
-            color: #8e8e93;
-        }
-
         .subtitle {
-            font-size: 11px;
-            letter-spacing: 2px;
+            font-size: 10px;
+            letter-spacing: 3px;
             color: #8e8e93;
-            margin-top: 4px;
+            margin-top: 6px;
             text-transform: uppercase;
         }
 
@@ -81,7 +96,7 @@
 
         .input-group {
             width: 100%;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
             display: flex;
             flex-direction: column;
             gap: 6px;
@@ -89,17 +104,17 @@
 
         .input-label {
             font-size: 13px;
-            font-weight: 500;
+            font-weight: 400;
             color: #ffffff;
         }
 
         .input-wrapper {
             position: relative;
             width: 100%;
-            height: 48px;
-            background: rgba(255, 255, 255, 0.05);
+            height: 46px;
+            background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 24px;
+            border-radius: 23px;
             display: flex;
             align-items: center;
             padding: 0 16px;
@@ -123,7 +138,7 @@
             color: #8e8e93;
         }
 
-        /* BOTÃO DE OLHO ESTILO INSTAGRAM (SÓ NO CAMPO SENHA) */
+        /* BOTÃO DE OLHO (SÓ NO CAMPO SENHA) */
         .toggle-password {
             background: none;
             border: none;
@@ -148,19 +163,20 @@
         /* BOTÃO ENTRAR PÍLULA BRANCA */
         .btn-submit {
             width: 100%;
-            height: 48px;
+            height: 46px;
             background: #ffffff;
             color: #000000;
             border: none;
-            border-radius: 24px;
-            font-size: 15px;
+            border-radius: 23px;
+            font-size: 14px;
             font-weight: 700;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
             cursor: pointer;
-            margin-top: 8px;
+            margin-top: 6px;
+            letter-spacing: 0.5px;
         }
 
         /* DIVISOR OU */
@@ -168,7 +184,7 @@
             width: 100%;
             display: flex;
             align-items: center;
-            margin: 20px 0;
+            margin: 16px 0;
             color: #8e8e93;
             font-size: 13px;
         }
@@ -178,7 +194,7 @@
             content: "";
             flex: 1;
             height: 1px;
-            background: rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.15);
         }
 
         .divider-container span {
@@ -188,13 +204,13 @@
         /* BOTÃO GOOGLE COM DIVISÓRIA VERTICAL */
         .btn-google {
             width: 100%;
-            height: 48px;
+            height: 46px;
             background: transparent;
             border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 24px;
+            border-radius: 23px;
             color: #ffffff;
             font-size: 14px;
-            font-weight: 600;
+            font-weight: 400;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -210,13 +226,20 @@
             margin-right: 12px;
         }
 
-        /* RODAPÉ EM CINZA FOSCO COM SUBLINHADO */
-        .footer-links {
-            margin-bottom: 12px;
+        /* RODAPÉ E LINKS */
+        .footer-area {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 12px;
+            gap: 16px;
+            margin-bottom: 4px;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
             font-size: 13px;
         }
 
@@ -231,6 +254,13 @@
         .footer-link:active, .footer-link:hover {
             color: #ffffff;
         }
+
+        .systendance-copy {
+            font-size: 11px;
+            color: #8e8e93;
+            letter-spacing: 0.5px;
+            margin: 0;
+        }
     </style>
 </head>
 <body>
@@ -238,9 +268,8 @@
     <div class="app-screen">
         <!-- TOPO -->
         <div class="logo-area">
-            <h1 class="logo-text">K.</h1>
-            <h2 class="brand-name">KONEΛT <span>LITE</span></h2>
-            <p class="subtitle">O COMEÇO</p>
+            <h1 class="logo-text">KONEΛT</h1>
+            <div class="subtitle">O COMEÇO</div>
         </div>
 
         <!-- FORMULÁRIO DE LOGIN -->
@@ -258,8 +287,9 @@
                     <div class="input-wrapper">
                         <input type="password" id="passwordField" class="input-field" placeholder="Digite sua senha." required autocomplete="current-password">
                         <button type="button" class="toggle-password" id="togglePassBtn" aria-label="Alternar senha">
-                            <svg id="eyeIcon" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zm0 12.5c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                            <svg id="eyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="1" y1="1" x2="23" y2="23"></line>
+                                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
                             </svg>
                         </button>
                     </div>
@@ -267,7 +297,7 @@
 
                 <button type="submit" class="btn-submit" id="btnSubmit">
                     ENTRAR 
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                 </button>
             </form>
 
@@ -283,43 +313,26 @@
             </button>
         </div>
 
-        <!-- RODAPÉ COMPACTO CINZA -->
-        <div class="footer-links">
-            <a id="btnSignUp" class="footer-link">Criar nova conta</a>
-            <a id="btnForgot" class="footer-link">Recuperar acesso</a>
+        <!-- RODAPÉ -->
+        <div class="footer-area">
+            <div class="footer-links">
+                <a id="btnSignUp" class="footer-link">Criar nova conta</a>
+                <a id="btnForgot" class="footer-link">Recuperar acesso</a>
+            </div>
+            <p class="systendance-copy">© 2027 Systendance.</p>
         </div>
     </div>
 
     <script>
         /* ===============================================================
-           1. CLIENTE SUPABASE
-           =============================================================== */
-        const SUPABASE_URL = 'https://aerhvhowzteqezqvhtmg.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_N0XY12nN2CAdEmI4FCGSaA__y0NNKkO';
-
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-            auth: {
-                persistSession: true,
-                autoRefreshToken: true,
-                detectSessionInUrl: true
-            }
-        });
-
-        // Destino absoluto depois de autenticar (obrigatório no OAuth)
-        // Página do perfil que já existe no projeto (passo 1)
-        const PAGINA_PERFIL = window.location.href.replace(/[?#].*$/, '').replace(/[^/]*$/, '') + 'passo1.html';
-
-        /* ===============================================================
-           2. ALTERNÂNCIA DO OLHO DO INSTAGRAM
+           1. ALTERNÂNCIA DO OLHO DE SENHA
            =============================================================== */
         const passwordField = document.getElementById('passwordField');
         const togglePassBtn = document.getElementById('togglePassBtn');
         const eyeIcon = document.getElementById('eyeIcon');
-        const btnSubmit = document.getElementById('btnSubmit');
-        const btnGoogle = document.getElementById('btnGoogle');
 
-        const openEyeSVG = `<path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zm0 12.5c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>`;
-        const closedEyeSVG = `<path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.44-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2z"/>`;
+        const openEyeSVG = `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>`;
+        const closedEyeSVG = `<line x1="1" y1="1" x2="23" y2="23"></line><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>`;
 
         togglePassBtn.addEventListener('click', () => {
             const isPassword = passwordField.getAttribute('type') === 'password';
@@ -328,89 +341,27 @@
         });
 
         /* ===============================================================
-           3. SE JÁ HOUVER SESSÃO, VAI DIRETO PARA O PERFIL
+           2. EVENTOS DOS BOTÕES E LINKS (PRONTO PARA INTEGRAÇÃO)
            =============================================================== */
-        window.addEventListener('DOMContentLoaded', async () => {
-            const { data } = await supabaseClient.auth.getSession();
-            if (data && data.session) {
-                window.location.replace(PAGINA_PERFIL);
-            }
-        });
-
-        /* ===============================================================
-           4. LOGIN COM E-MAIL E SENHA
-           =============================================================== */
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
             e.preventDefault();
-
-            const email = document.getElementById('emailField').value.trim().toLowerCase();
+            const email = document.getElementById('emailField').value.trim();
             const password = passwordField.value;
 
             if (!email || !password) {
                 alert('Preencha o e-mail e a senha.');
                 return;
             }
-
-            btnSubmit.disabled = true;
-
-            const { data, error } = await supabaseClient.auth.signInWithPassword({
-                email: email,
-                password: password
-            });
-
-            btnSubmit.disabled = false;
-
-            if (!error) {
-                window.location.replace(PAGINA_PERFIL);
-                return;
-            }
-
-            // E-mail criado mas o link de confirmação ainda não foi aberto
-            if (error.code === 'email_not_confirmed' || /not confirmed/i.test(error.message)) {
-                await supabaseClient.auth.resend({
-                    type: 'signup',
-                    email: email,
-                    options: { emailRedirectTo: PAGINA_PERFIL }
-                });
-                window.location.href = 'cadastro.html?email=' + encodeURIComponent(email) + '&verificar=1';
-                return;
-            }
-
-            if (error.code === 'invalid_credentials' || /invalid login credentials/i.test(error.message)) {
-                alert('E-mail ou senha incorretos.');
-                return;
-            }
-
-            alert('Erro ao entrar: ' + error.message);
+            
+            // Simulação de redirecionamento para o perfil (o Lovable/Base44 fará a integração com Supabase depois)
+            window.location.href = 'passo1.html';
         });
 
-        /* ===============================================================
-           5. LOGIN COM GOOGLE
-           redirectTo tem de ser uma URL absoluta registrada em
-           Authentication > URL Configuration > Redirect URLs
-           =============================================================== */
-        btnGoogle.addEventListener('click', async () => {
-            if (btnGoogle.disabled) return;
-            btnGoogle.disabled = true;
-
-            const { error } = await supabaseClient.auth.signInWithOAuth({
-                provider: 'google',
-                options: {
-                    redirectTo: PAGINA_PERFIL,
-                    queryParams: { prompt: 'select_account' }
-                }
-            });
-
-            // Se não houver erro, o browser é redirecionado automaticamente.
-            if (error) {
-                btnGoogle.disabled = false;
-                alert('Erro com Google: ' + error.message);
-            }
+        document.getElementById('btnGoogle').addEventListener('click', () => {
+            // Placeholder para o fluxo de OAuth do Google
+            window.location.href = 'passo1.html';
         });
 
-        /* ===============================================================
-           6. LINKS DO RODAPÉ
-           =============================================================== */
         document.getElementById('btnSignUp').addEventListener('click', () => {
             window.location.href = 'cadastro.html';
         });
@@ -420,4 +371,5 @@
         });
     </script>
 </body>
-</html>
+    </html>
+                    
