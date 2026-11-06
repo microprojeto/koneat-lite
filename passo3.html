@@ -188,7 +188,7 @@
             object-fit: contain;
         }
 
-        /* BOTÃO AVANÇAR MENOS ESTICADO (Mais compacto e centralizado) */
+        /* BOTÃO AVANÇAR */
         .advance-button {
             position: fixed;
             left: 50%;
@@ -241,7 +241,7 @@
             height: 22px;
         }
 
-        /* ESTILO DO ITEM ATIVO: QUADRADINHO OCO BRANCO COM SÍMBOLO BRANCO (IGUAL À REFERÊNCIA) */
+        /* ESTILO DO ITEM ATIVO (PLUS) */
         .nav-link.active .nav-box-bg {
             stroke: #ffffff;
             fill: none;
@@ -330,7 +330,7 @@
             </svg>
         </a>
 
-        <!-- 2. Criar / Plus (Passo 3 - Ativo com quadradinho oco e sinal de + branco) -->
+        <!-- 2. Criar / Plus (Passo 3 - Ativo) -->
         <a href="./passo3.html" class="nav-link active" aria-label="Criar">
             <svg viewBox="0 0 24 24">
                 <rect class="nav-box-bg" x="2" y="2" width="20" height="20" rx="5" stroke="#ffffff" stroke-width="2" fill="none"></rect>
@@ -346,11 +346,11 @@
             </svg>
         </a>
 
-        <!-- 4. Perfil (Passo 1) -->
+        <!-- 4. Perfil (Inativo padronizado com ombros retos e linha horizontal) -->
         <a href="./passo1.html" class="nav-link" aria-label="Perfil">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
-                <circle cx="12" cy="7" r="4"/>
-                <path d="M4 21v-2a8 8 0 0 1 16 0v2"/>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
             </svg>
         </a>
     </nav>
@@ -424,5 +424,5 @@
         });
     </script>
 </body>
-                    </html>
-                    
+                </html>
+                
